@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/samples/">
+    <Project Path="samples/ConsoleApp/ConsoleApp.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/LocalEmbeddings/LocalEmbeddings.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/LocalEmbeddings.Tests/LocalEmbeddings.Tests.csproj" />
+  </Folder>
+</Solution>
