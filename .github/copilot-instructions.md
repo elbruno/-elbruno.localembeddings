@@ -13,3 +13,44 @@
 - Main project: `src/LocalEmbeddings/LocalEmbeddings.csproj`
 - Tests: `tests/LocalEmbeddings.Tests/`
 - Samples: `samples/ConsoleApp/` and `samples/RagChat/`
+
+## Repository Structure
+
+Keep the root clean. Only these files belong in the repository root:
+
+- `README.md` — Project overview and quick start
+- `LICENSE` — MIT license
+- `LocalEmbeddings.slnx` — Solution file
+- `Directory.Build.props` — Shared build properties
+- `.editorconfig` — Code style settings
+- `.gitignore` / `.gitattributes` — Git configuration
+
+All other documentation goes in the `docs/` folder:
+
+- `docs/` — Extended documentation (architecture, API reference, contributing guide, etc.)
+
+### Folder layout
+
+```
+├── README.md                  # Keep in root (also packed into NuGet)
+├── LICENSE                    # Keep in root
+├── LocalEmbeddings.slnx       # Keep in root
+├── Directory.Build.props       # Keep in root
+├── docs/                       # All extended documentation lives here
+│   ├── api-reference.md
+│   ├── configuration.md
+│   └── contributing.md
+├── src/                        # Source code
+│   └── LocalEmbeddings/
+├── tests/                      # Test projects
+│   └── LocalEmbeddings.Tests/
+└── samples/                    # Sample applications
+    ├── ConsoleApp/
+    └── RagChat/
+```
+
+## Documentation Rules
+
+- **README.md** stays in the root — it is packed into the NuGet package via `<PackageReadmeFile>`.
+- Any doc that is **not** the README or LICENSE must go in `docs/`.
+- When adding new documentation, create it under `docs/`, not in the root.
