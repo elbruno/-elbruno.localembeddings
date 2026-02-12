@@ -43,7 +43,7 @@ public sealed class Tokenizer
     /// <summary>
     /// Creates a new tokenizer from a tokenizer.json file.
     /// </summary>
-    /// <param name="tokenizerPath">Path to the tokenizer.json file or model directory containing it.</param>
+    /// <param name="tokenizerPath">Path to the vocab.txt file or model directory containing it.</param>
     /// <param name="maxLength">Maximum sequence length (default: 512).</param>
     /// <exception cref="ArgumentException">Thrown when the path is null or empty.</exception>
     /// <exception cref="FileNotFoundException">Thrown when the tokenizer file is not found.</exception>
@@ -54,14 +54,15 @@ public sealed class Tokenizer
             throw new ArgumentException("Tokenizer path cannot be null or empty.", nameof(tokenizerPath));
         }
 
-        // If a directory is provided, look for tokenizer.json inside
+        // If a directory is provided, look for vocab.txt inside
+        // BertTokenizer.Create expects a vocab.txt file (one token per line), not tokenizer.json
         var actualPath = Directory.Exists(tokenizerPath)
-            ? Path.Combine(tokenizerPath, "tokenizer.json")
+            ? Path.Combine(tokenizerPath, "vocab.txt")
             : tokenizerPath;
 
         if (!File.Exists(actualPath))
         {
-            throw new FileNotFoundException("Tokenizer file not found.", actualPath);
+            throw new FileNotFoundException("Vocab file not found.", actualPath);
         }
 
         if (maxLength <= 0)
@@ -71,7 +72,7 @@ public sealed class Tokenizer
 
         _maxLength = maxLength;
 
-        // Load using the tokenizer.json file (HuggingFace format)
+        // Load using the vocab.txt file (BertTokenizer format)
         using var stream = File.OpenRead(actualPath);
         _tokenizer = BertTokenizer.Create(stream);
     }
