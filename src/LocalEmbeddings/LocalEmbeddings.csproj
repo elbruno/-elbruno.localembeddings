@@ -12,6 +12,7 @@
     <PackageProjectUrl>https://github.com/elbruno/elbruno.localembeddings</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Version>0.5.0-preview</Version>
   </PropertyGroup>
 
   <ItemGroup>
