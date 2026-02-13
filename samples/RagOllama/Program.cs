@@ -1,123 +1,74 @@
-using System.Runtime.CompilerServices;
-using LocalEmbeddings;
-using LocalEmbeddings.Options;
-using Microsoft.Extensions.AI;
-using RagOllama;
+#pragma warning disable SKEXP0001, SKEXP0003, SKEXP0010, SKEXP0011, SKEXP0050, SKEXP0052, SKEXP0070
+
+using Microsoft.KernelMemory;
+using Microsoft.KernelMemory.AI.Ollama;
 using OllamaSharp;
-using OllamaChatRole = OllamaSharp.Models.Chat.ChatRole;
-using OllamaChatRequest = OllamaSharp.Models.Chat.ChatRequest;
-using OllamaMessage = OllamaSharp.Models.Chat.Message;
+using OllamaSharp.Models.Chat;
 
-Console.WriteLine("RAG sample with elbruno.LocalEmbeddings + Ollama phi3.5");
-Console.WriteLine("Type 'exit' to quit.");
+var ollamaEndpoint = "http://localhost:11434";
+var modelIdChat = "phi3.5";
 
-using var embeddingGenerator = new LocalEmbeddingGenerator(new LocalEmbeddingsOptions());
-var vectorStore = new SimpleVectorStore(embeddingGenerator);
-await vectorStore.AddAsync(KnowledgeBase.Documents);
+// questions
+var question = "What is Bruno's favourite super hero?";
 
-using var ollama = new OllamaApiClient(new Uri("http://localhost:11434"), "phi3.5");
-IChatClient chatClient = new OllamaChatClient(ollama);
+// intro
+SpectreConsoleOutput.DisplayTitle(modelIdChat);
+SpectreConsoleOutput.DisplayTitleH2($"This program will answer the following question:");
+SpectreConsoleOutput.DisplayTitleH3(question);
+SpectreConsoleOutput.DisplayTitleH2($"Approach:");
+SpectreConsoleOutput.DisplayTitleH3($"1st approach will be to ask the question directly to the {modelIdChat} model.");
+SpectreConsoleOutput.DisplayTitleH3("2nd approach will be to add facts to a semantic memory and ask the question again");
 
-while (true)
+SpectreConsoleOutput.DisplayTitleH2($"{modelIdChat} response (no memory).");
+
+// set up the client
+var ollama = new OllamaApiClient(ollamaEndpoint);
+ollama.SelectedModel = modelIdChat;
+
+await foreach (var answerToken in ollama.GenerateAsync(question))
+    Console.Write(answerToken);
+
+// separator
+Console.WriteLine("");
+SpectreConsoleOutput.DisplaySeparator();
+
+var configOllamaKernelMemory = new OllamaConfig
 {
-    Console.Write("\nYou> ");
-    var query = Console.ReadLine()?.Trim();
-    if (string.IsNullOrWhiteSpace(query))
-    {
-        continue;
-    }
+    Endpoint = ollamaEndpoint,
+    TextModel = new OllamaModelConfig(modelIdChat)
+};
+var memory = new KernelMemoryBuilder()
+    .WithOllamaTextGeneration(configOllamaKernelMemory)
+    .WithCustomEmbeddingGenerator()
+    .Build();
 
-    if (query.Equals("exit", StringComparison.OrdinalIgnoreCase))
-    {
-        break;
-    }
+var informationList = new List<string>
+{
+    "Gisela's favourite super hero is Batman",
+    "Gisela watched Venom 3 2 weeks ago",
+    "Bruno's favourite super hero is Invincible",
+    "Bruno went to the cinema to watch Venom 3",
+    "Bruno doesn't like the super hero movie: Eternals",
+    "ACE and Goku watched the movies Venom 3 and Eternals",
+};
 
-    var contextDocs = await vectorStore.SearchAsync(query, topK: 3);
-    var prompt = BuildPrompt(query, contextDocs.Select(d => d.Content));
+SpectreConsoleOutput.DisplayTitleH2($"Information List");
 
-    Console.Write("Assistant> ");
-    await foreach (var update in chatClient.GetStreamingResponseAsync([new ChatMessage(Microsoft.Extensions.AI.ChatRole.User, prompt)]))
-    {
-        if (!string.IsNullOrEmpty(update.Text))
-        {
-            Console.Write(update.Text);
-        }
-    }
-
-    Console.WriteLine();
+int docId = 1;
+foreach (var info in informationList)
+{
+    SpectreConsoleOutput.WriteYellow($"Adding docId: {docId} - information: {info}", true);
+    await memory.ImportTextAsync(info, docId.ToString());
+    docId++;
 }
 
-static string BuildPrompt(string question, IEnumerable<string> contextDocs)
+SpectreConsoleOutput.DisplayTitleH3($"Asking question with memory: {question}");
+var answer = memory.AskStreamingAsync(question);
+await foreach (var result in answer)
 {
-    var context = string.Join("\n- ", contextDocs);
-    return $"""
-You are a helpful assistant. Use the provided context to answer briefly and accurately.
+    SpectreConsoleOutput.WriteGreen($"{result.Result}");
+    SpectreConsoleOutput.DisplayNewLine();
 
-Context:
-- {context}
-
-Question: {question}
-""";
 }
 
-internal sealed class OllamaChatClient(IOllamaApiClient client) : IChatClient
-{
-    public async Task<ChatResponse> GetResponseAsync(IEnumerable<ChatMessage> messages, ChatOptions? options = null, CancellationToken cancellationToken = default)
-    {
-        var text = string.Empty;
-        await foreach (var update in GetStreamingResponseAsync(messages, options, cancellationToken))
-        {
-            if (!string.IsNullOrEmpty(update.Text))
-            {
-                text += update.Text;
-            }
-        }
-
-        return new ChatResponse(new ChatMessage(ChatRole.Assistant, text));
-    }
-
-    public async IAsyncEnumerable<ChatResponseUpdate> GetStreamingResponseAsync(
-        IEnumerable<ChatMessage> messages,
-        ChatOptions? options = null,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        var request = new OllamaChatRequest
-        {
-            Model = client.SelectedModel,
-            Stream = true,
-            Messages = messages.Select(m => new OllamaMessage(MapRole(m.Role), m.Text ?? string.Empty))
-        };
-
-        await foreach (var update in client.ChatAsync(request, cancellationToken))
-        {
-            if (update?.Message is { Content: { Length: > 0 } text })
-            {
-                yield return new ChatResponseUpdate(Microsoft.Extensions.AI.ChatRole.Assistant, text);
-            }
-        }
-    }
-
-    public object? GetService(Type serviceType, object? serviceKey = null)
-    {
-        return serviceType.IsInstanceOfType(client) ? client : null;
-    }
-
-    public void Dispose()
-    {
-    }
-
-    private static OllamaChatRole MapRole(Microsoft.Extensions.AI.ChatRole role)
-    {
-        if (role == Microsoft.Extensions.AI.ChatRole.System)
-        {
-            return OllamaChatRole.System;
-        }
-
-        if (role == Microsoft.Extensions.AI.ChatRole.Assistant)
-        {
-            return OllamaChatRole.Assistant;
-        }
-
-        return OllamaChatRole.User;
-    }
-}
+Console.WriteLine($"");
