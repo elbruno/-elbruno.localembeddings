@@ -10,6 +10,11 @@ public sealed class LocalEmbeddingGenerator : IEmbeddingGenerator<string, Embedd
     // Constructor
     public LocalEmbeddingGenerator(LocalEmbeddingsOptions options);
 
+    // Async factory method
+    public static Task<LocalEmbeddingGenerator> CreateAsync(
+        LocalEmbeddingsOptions options,
+        CancellationToken cancellationToken = default);
+
     // Properties
     public EmbeddingGeneratorMetadata Metadata { get; }
 
@@ -37,6 +42,7 @@ public sealed class LocalEmbeddingsOptions
     public string? CacheDirectory { get; set; }
     public int MaxSequenceLength { get; set; }
     public bool EnsureModelDownloaded { get; set; }
+    public bool NormalizeEmbeddings { get; set; }
 }
 ```
 
@@ -47,6 +53,26 @@ public sealed class LocalEmbeddingsOptions
 | `CacheDirectory` | `string?` | `null` | Custom directory for model cache |
 | `MaxSequenceLength` | `int` | `512` | Maximum token sequence length |
 | `EnsureModelDownloaded` | `bool` | `true` | Download model on startup if not cached |
+| `NormalizeEmbeddings` | `bool` | `false` | Normalize vectors to unit length |
+
+## EmbeddingExtensions
+
+Utility methods for embedding comparison and retrieval.
+
+```csharp
+public static class EmbeddingExtensions
+{
+    public static float CosineSimilarity(this ReadOnlyMemory<float> a, ReadOnlyMemory<float> b);
+
+    public static float CosineSimilarity(this Embedding<float> a, Embedding<float> b);
+
+    public static List<(T Item, float Score)> FindClosest<T>(
+        this IEnumerable<(T Item, Embedding<float> Embedding)> items,
+        Embedding<float> query,
+        int topK = 5,
+        float minScore = 0.0f);
+}
+```
 
 ## ServiceCollectionExtensions
 
