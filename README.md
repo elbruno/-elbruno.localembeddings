@@ -30,8 +30,8 @@ dotnet add package elbruno.LocalEmbeddings.KernelMemory
 ## Quick Start
 
 ```csharp
-using LocalEmbeddings;
-using LocalEmbeddings.Options;
+using elbruno.LocalEmbeddings;
+using elbruno.LocalEmbeddings.Options;
 
 // Create the generator (downloads model automatically on first run)
 using var generator = new LocalEmbeddingGenerator(new LocalEmbeddingsOptions());

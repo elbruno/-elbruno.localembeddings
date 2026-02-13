@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\LocalEmbeddings.KernelMemory\LocalEmbeddings.KernelMemory.csproj" />
+    <ProjectReference Include="..\..\src\elbruno.LocalEmbeddings.KernelMemory\elbruno.LocalEmbeddings.KernelMemory.csproj" />
   </ItemGroup>
 
   <ItemGroup>

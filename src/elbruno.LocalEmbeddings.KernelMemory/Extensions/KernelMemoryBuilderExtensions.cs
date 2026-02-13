@@ -1,8 +1,8 @@
-using LocalEmbeddings.Options;
+using elbruno.LocalEmbeddings.Options;
 using Microsoft.Extensions.AI;
 using Microsoft.KernelMemory;
 
-namespace LocalEmbeddings.KernelMemory.Extensions;
+namespace elbruno.LocalEmbeddings.KernelMemory.Extensions;
 
 /// <summary>
 /// Extension methods for <see cref="IKernelMemoryBuilder"/> to register local ONNX-based

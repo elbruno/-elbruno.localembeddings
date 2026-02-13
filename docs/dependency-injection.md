@@ -5,7 +5,7 @@
 ## 1) Basic registration
 
 ```csharp
-using LocalEmbeddings.Extensions;
+using elbruno.LocalEmbeddings.Extensions;
 
 services.AddLocalEmbeddings();
 ```
@@ -83,7 +83,7 @@ dotnet add package elbruno.LocalEmbeddings.KernelMemory
 ### 1) Basic registration
 
 ```csharp
-using LocalEmbeddings.KernelMemory.Extensions;
+using elbruno.LocalEmbeddings.KernelMemory.Extensions;
 
 services.AddLocalEmbeddingsWithKernelMemory();
 ```

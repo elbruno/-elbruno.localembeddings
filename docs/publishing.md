@@ -6,8 +6,8 @@ This guide covers how to publish new versions of **elbruno.LocalEmbeddings** and
 
 | Package | Project | Description |
 |---------|---------|-------------|
-| `elbruno.LocalEmbeddings` | `src/LocalEmbeddings/` | Core library — local ONNX embedding generation |
-| `elbruno.LocalEmbeddings.KernelMemory` | `src/LocalEmbeddings.KernelMemory/` | Companion — Kernel Memory adapter + extensions |
+| `elbruno.LocalEmbeddings` | `src/elbruno.LocalEmbeddings/` | Core library — local ONNX embedding generation |
+| `elbruno.LocalEmbeddings.KernelMemory` | `src/elbruno.LocalEmbeddings.KernelMemory/` | Companion — Kernel Memory adapter + extensions |
 
 ## Prerequisites (One-Time Setup)
 
@@ -41,7 +41,7 @@ This is the standard workflow — the version is derived from the release tag.
 
 1. **Update the version** in both csproj files:
 
-   - `src/LocalEmbeddings/LocalEmbeddings.csproj`
+   - `src/elbruno.LocalEmbeddings/elbruno.LocalEmbeddings.csproj`
    - `src/LocalEmbeddings.KernelMemory/LocalEmbeddings.KernelMemory.csproj`
 
    ```xml
@@ -87,7 +87,7 @@ The workflow determines the package version in this order:
 
 1. **Release tag** — if triggered by a GitHub Release (strips leading `v`)
 2. **Manual input** — if triggered via workflow dispatch with a version specified
-3. **csproj fallback** — reads `<Version>` from `src/LocalEmbeddings/LocalEmbeddings.csproj`
+3. **csproj fallback** — reads `<Version>` from `src/elbruno.LocalEmbeddings/elbruno.LocalEmbeddings.csproj`
 
 ## Troubleshooting
 

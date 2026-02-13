@@ -13,8 +13,8 @@ dotnet add package elbruno.LocalEmbeddings
 ```
 
 ```csharp
-using LocalEmbeddings;
-using LocalEmbeddings.Options;
+using elbruno.LocalEmbeddings;
+using elbruno.LocalEmbeddings.Options;
 
 // Create the generator (downloads model automatically on first run)
 using var generator = new LocalEmbeddingGenerator(new LocalEmbeddingsOptions());
@@ -34,7 +34,7 @@ The first run downloads the default model (`sentence-transformers/all-MiniLM-L6-
 Embeddings turn text into vectors. Similar texts produce vectors that point in similar directions. Cosine similarity measures this — 1.0 means identical, 0.0 means unrelated.
 
 ```csharp
-using LocalEmbeddings.Extensions; // for CosineSimilarity
+using elbruno.LocalEmbeddings.Extensions; // for CosineSimilarity
 
 var embeddings = await generator.GenerateAsync(["I love programming", "I enjoy coding"]);
 float similarity = embeddings[0].CosineSimilarity(embeddings[1]);
@@ -74,7 +74,7 @@ Batching is more efficient than calling `GenerateAsync` once per string because 
 Use `FindClosest` to search a collection by meaning instead of keywords:
 
 ```csharp
-using LocalEmbeddings.Extensions;
+using elbruno.LocalEmbeddings.Extensions;
 
 // Build a searchable collection
 var docs = new[]
@@ -106,7 +106,7 @@ foreach (var (text, score) in results)
 Register LocalEmbeddings with `IServiceCollection` for production apps:
 
 ```csharp
-using LocalEmbeddings.Extensions;
+using elbruno.LocalEmbeddings.Extensions;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -6,10 +6,11 @@
     <Project Path="samples/RagOllama/RagOllama.csproj" />
   </Folder>
   <Folder Name="/src/">
-    <Project Path="src/LocalEmbeddings/LocalEmbeddings.csproj" />
-    <Project Path="src/LocalEmbeddings.KernelMemory/LocalEmbeddings.KernelMemory.csproj" />
+    <Project Path="src/elbruno.LocalEmbeddings/elbruno.LocalEmbeddings.csproj" />
+    <Project Path="src/elbruno.LocalEmbeddings.KernelMemory/elbruno.LocalEmbeddings.KernelMemory.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/LocalEmbeddings.Tests/LocalEmbeddings.Tests.csproj" />
+    <Project Path="tests/elbruno.LocalEmbeddings.Tests/elbruno.LocalEmbeddings.Tests.csproj" />
+    <Project Path="tests/elbruno.LocalEmbeddings.KernelMemory.Tests/elbruno.LocalEmbeddings.KernelMemory.Tests.csproj" />
   </Folder>
 </Solution>

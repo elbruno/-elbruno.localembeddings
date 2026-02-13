@@ -1,7 +1,7 @@
-using LocalEmbeddings.Options;
+using elbruno.LocalEmbeddings.Options;
 using Microsoft.Extensions.AI;
 
-namespace LocalEmbeddings.Tests;
+namespace elbruno.LocalEmbeddings.Tests;
 
 public class LocalEmbeddingGeneratorTests
 {
@@ -317,7 +317,7 @@ public class LocalEmbeddingGeneratorTests
         };
 
         var generator = new LocalEmbeddingGenerator(options);
-        
+
         // Should not throw on multiple dispose calls
         generator.Dispose();
         generator.Dispose();

@@ -1,5 +1,5 @@
-using LocalEmbeddings;
-using LocalEmbeddings.Options;
+using elbruno.LocalEmbeddings;
+using elbruno.LocalEmbeddings.Options;
 using Microsoft.AI.Foundry.Local;
 using Microsoft.Extensions.AI;
 using OpenAI;

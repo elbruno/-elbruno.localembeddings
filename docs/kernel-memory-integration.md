@@ -19,7 +19,7 @@ This installs the companion package which transitively brings in:
 The simplest way to use local embeddings with Kernel Memory:
 
 ```csharp
-using LocalEmbeddings.KernelMemory.Extensions;
+using elbruno.LocalEmbeddings.KernelMemory.Extensions;
 using Microsoft.KernelMemory;
 
 var memory = new KernelMemoryBuilder()
@@ -81,7 +81,7 @@ The adapter does **not** take ownership — the caller manages the generator's l
 For host-based applications, register both M.E.AI and Kernel Memory interfaces in one call:
 
 ```csharp
-using LocalEmbeddings.KernelMemory.Extensions;
+using elbruno.LocalEmbeddings.KernelMemory.Extensions;
 
 services.AddLocalEmbeddingsWithKernelMemory(options =>
 {
@@ -158,8 +158,8 @@ If you previously used `WithCustomEmbeddingGenerator<T>()` directly:
 **Before** (manual bridge):
 
 ```csharp
-using LocalEmbeddings;
-using LocalEmbeddings.Options;
+using elbruno.LocalEmbeddings;
+using elbruno.LocalEmbeddings.Options;
 using Microsoft.Extensions.AI;
 using Microsoft.KernelMemory;
 
@@ -174,7 +174,7 @@ var memory = new KernelMemoryBuilder()
 **After** (companion package):
 
 ```csharp
-using LocalEmbeddings.KernelMemory.Extensions;
+using elbruno.LocalEmbeddings.KernelMemory.Extensions;
 using Microsoft.KernelMemory;
 
 var memory = new KernelMemoryBuilder()
@@ -190,7 +190,7 @@ The companion package handles generator construction, adapter wrapping, and life
 See [samples/RagOllama](../samples/RagOllama) for a full working example:
 
 ```csharp
-using LocalEmbeddings.KernelMemory.Extensions;
+using elbruno.LocalEmbeddings.KernelMemory.Extensions;
 using Microsoft.KernelMemory;
 using Microsoft.KernelMemory.AI.Ollama;
 

@@ -28,11 +28,11 @@ dotnet test
 ├── Directory.Build.props       # Shared build properties
 ├── docs/                       # Extended documentation
 ├── src/
-│   ├── LocalEmbeddings/               # Core library (M.E.AI + ONNX)
-│   └── LocalEmbeddings.KernelMemory/   # Kernel Memory companion package
+│   ├── elbruno.LocalEmbeddings/               # Core library (M.E.AI + ONNX)
+│   └── elbruno.LocalEmbeddings.KernelMemory/   # Kernel Memory companion package
 ├── tests/
-│   ├── LocalEmbeddings.Tests/                # Core unit tests
-│   └── LocalEmbeddings.KernelMemory.Tests/   # KM adapter tests
+│   ├── elbruno.LocalEmbeddings.Tests/                # Core unit tests
+│   └── elbruno.LocalEmbeddings.KernelMemory.Tests/   # KM adapter tests
 └── samples/                    # Sample applications
     ├── ConsoleApp/
     ├── RagChat/

@@ -1,6 +1,6 @@
 #pragma warning disable CS8602
 
-using LocalEmbeddings.KernelMemory.Extensions;
+using elbruno.LocalEmbeddings.KernelMemory.Extensions;
 using Microsoft.KernelMemory;
 using Microsoft.KernelMemory.AI.Ollama;
 using OllamaSharp;

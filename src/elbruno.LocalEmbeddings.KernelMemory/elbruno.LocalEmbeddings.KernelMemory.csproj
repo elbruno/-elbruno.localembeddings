@@ -14,10 +14,11 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>embeddings;onnx;ai;local;kernel-memory;semantic-memory;microsoft-extensions-ai;sentence-transformers</PackageTags>
     <Version>1.0.1</Version>
+    <NoWarn>$(NoWarn);KMEXP00</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LocalEmbeddings\LocalEmbeddings.csproj" />
+    <ProjectReference Include="..\elbruno.LocalEmbeddings\elbruno.LocalEmbeddings.csproj" />
   </ItemGroup>
 
   <ItemGroup>

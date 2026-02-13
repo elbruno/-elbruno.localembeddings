@@ -1,9 +1,9 @@
-using LocalEmbeddings.Options;
+using elbruno.LocalEmbeddings.Options;
 using Microsoft.Extensions.AI;
 using Microsoft.KernelMemory;
 using Microsoft.KernelMemory.AI;
 
-namespace LocalEmbeddings.KernelMemory;
+namespace elbruno.LocalEmbeddings.KernelMemory;
 
 /// <summary>
 /// Adapts an <see cref="IEmbeddingGenerator{TInput, TEmbedding}"/> (Microsoft.Extensions.AI)

@@ -2,7 +2,7 @@ using System.Net;
 using Moq;
 using Moq.Protected;
 
-namespace LocalEmbeddings.Tests;
+namespace elbruno.LocalEmbeddings.Tests;
 
 public class ModelDownloaderTests
 {
