@@ -1,5 +1,6 @@
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
+using System.Runtime.InteropServices;
 
 namespace ElBruno.LocalEmbeddings;
 
@@ -57,21 +58,120 @@ public sealed class OnnxEmbeddingModel : IDisposable
             throw new InvalidOperationException("A model is already loaded. Dispose this instance and create a new one to load a different model.");
         }
 
-        var sessionOptions = new SessionOptions
-        {
-            GraphOptimizationLevel = GraphOptimizationLevel.ORT_ENABLE_ALL,
-            ExecutionMode = ExecutionMode.ORT_PARALLEL,
-            InterOpNumThreads = Environment.ProcessorCount,
-            IntraOpNumThreads = Environment.ProcessorCount
-        };
+        EnsureLinuxOnnxRuntimeAliases();
 
-        _session = new InferenceSession(modelPath, sessionOptions);
+        SessionOptions sessionOptions;
+        try
+        {
+            sessionOptions = new SessionOptions
+            {
+                GraphOptimizationLevel = GraphOptimizationLevel.ORT_ENABLE_ALL,
+                ExecutionMode = ExecutionMode.ORT_PARALLEL,
+                InterOpNumThreads = Environment.ProcessorCount,
+                IntraOpNumThreads = Environment.ProcessorCount
+            };
+        }
+        catch (Exception ex) when (ex is DllNotFoundException or TypeInitializationException)
+        {
+            throw new InvalidOperationException(
+                BuildOnnxNativeLoadErrorMessage(modelPath),
+                ex);
+        }
+
+        try
+        {
+            _session = new InferenceSession(modelPath, sessionOptions);
+        }
+        catch (Exception ex) when (ex is DllNotFoundException or TypeInitializationException)
+        {
+            sessionOptions.Dispose();
+            throw new InvalidOperationException(
+                BuildOnnxNativeLoadErrorMessage(modelPath),
+                ex);
+        }
+
         _outputNames = _session.OutputMetadata.Keys.ToArray();
         _normalizeEmbeddings = normalizeEmbeddings;
 
         // Determine embedding dimension from model output
         var outputMeta = _session.OutputMetadata.Values.First();
         EmbeddingDimension = outputMeta.Dimensions.Length > 2 ? outputMeta.Dimensions[2] : outputMeta.Dimensions[^1];
+    }
+
+    private static void EnsureLinuxOnnxRuntimeAliases()
+    {
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
+            return;
+        }
+
+        string? runtimeFolder = RuntimeInformation.ProcessArchitecture switch
+        {
+            Architecture.Arm64 => "linux-arm64",
+            Architecture.X64 => "linux-x64",
+            Architecture.Arm => "linux-arm",
+            _ => null
+        };
+
+        if (runtimeFolder is null)
+        {
+            return;
+        }
+
+        var baseDirectory = AppContext.BaseDirectory;
+        var nativeDirectory = Path.Combine(baseDirectory, "runtimes", runtimeFolder, "native");
+        var canonicalLibraryPath = Path.Combine(nativeDirectory, "libonnxruntime.so");
+
+        if (!File.Exists(canonicalLibraryPath))
+        {
+            return;
+        }
+
+        var aliasNames = new[] { "onnxruntime.dll.so", "libonnxruntime.dll.so" };
+        foreach (var aliasName in aliasNames)
+        {
+            TryCreateAliasCopy(canonicalLibraryPath, Path.Combine(nativeDirectory, aliasName));
+            TryCreateAliasCopy(canonicalLibraryPath, Path.Combine(baseDirectory, aliasName));
+        }
+    }
+
+    private static void TryCreateAliasCopy(string sourcePath, string destinationPath)
+    {
+        if (File.Exists(destinationPath))
+        {
+            return;
+        }
+
+        try
+        {
+            File.Copy(sourcePath, destinationPath);
+        }
+        catch
+        {
+            // Best effort only. If this fails, ONNX Runtime will still throw and
+            // callers receive a detailed error message with platform diagnostics.
+        }
+    }
+
+    private static string BuildOnnxNativeLoadErrorMessage(string modelPath)
+    {
+        var osDescription = RuntimeInformation.OSDescription;
+        var architecture = RuntimeInformation.ProcessArchitecture;
+        var baseDirectory = AppContext.BaseDirectory;
+
+        string? runtimeFolder = RuntimeInformation.ProcessArchitecture switch
+        {
+            Architecture.Arm64 => "linux-arm64",
+            Architecture.X64 => "linux-x64",
+            Architecture.Arm => "linux-arm",
+            _ => null
+        };
+
+        var nativeDirectory = runtimeFolder is null
+            ? "<unknown>"
+            : Path.Combine(baseDirectory, "runtimes", runtimeFolder, "native");
+
+        return $"Failed to initialize ONNX Runtime native libraries. OS: {osDescription}; Architecture: {architecture}; Model path: '{modelPath}'; Base directory: '{baseDirectory}'; Expected native directory: '{nativeDirectory}'. On Linux, ensure ONNX native libraries are present and loadable (libonnxruntime.so and provider dependencies).";
     }
 
     /// <summary>
