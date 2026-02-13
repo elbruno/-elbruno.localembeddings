@@ -1,6 +1,9 @@
 <Solution>
   <Folder Name="/samples/">
     <Project Path="samples/ConsoleApp/ConsoleApp.csproj" />
+    <Project Path="samples/RagChat/RagChat.csproj" />
+    <Project Path="samples/RagFoundryLocal/RagFoundryLocal.csproj" />
+    <Project Path="samples/RagOllama/RagOllama.csproj" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/LocalEmbeddings/LocalEmbeddings.csproj" />
