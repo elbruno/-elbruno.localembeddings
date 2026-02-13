@@ -154,6 +154,8 @@ Two complete RAG samples are included:
 
 Both use `LocalEmbeddingGenerator` for embeddings and `IChatClient` (from `Microsoft.Extensions.AI`) for chat completions, so the RAG logic is identical — only the LLM provider changes.
 
+> **Tip:** The [RagOllama](../samples/RagOllama) sample uses the companion package `elbruno.LocalEmbeddings.KernelMemory` which integrates directly with [Microsoft Kernel Memory](https://github.com/microsoft/kernel-memory). Instead of building the RAG pipeline manually, the single call `.WithLocalEmbeddings()` on `KernelMemoryBuilder` handles embedding registration. See [Kernel Memory Integration](kernel-memory-integration.md) for details.
+
 ### Key code pattern (from both samples)
 
 ```csharp
@@ -184,4 +186,5 @@ await foreach (var chunk in chatClient.GetStreamingResponseAsync(prompt))
 - **[API Reference](api-reference.md)** — Full class and method documentation
 - **[Configuration](configuration.md)** — All options, supported models, cache locations
 - **[Dependency Injection](dependency-injection.md)** — All DI overloads and `IConfiguration` binding
+- **[Kernel Memory Integration](kernel-memory-integration.md)** — Use local embeddings with Microsoft Kernel Memory for semantic memory / RAG
 - **[Samples README](../samples/README.md)** — All sample projects with prerequisites and run instructions

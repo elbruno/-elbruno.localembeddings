@@ -8,7 +8,7 @@ Four sample projects demonstrating LocalEmbeddings from basic usage to full RAG 
 |--------|--------------|---------------|
 | [ConsoleApp](#consoleapp) | Embedding basics: generation, similarity, search, DI | No |
 | [RagChat](#ragchat) | Semantic search Q&A over an in-memory FAQ dataset | No |
-| [RagOllama](#ragollama) | Full RAG chat using Ollama with phi-3.5-mini | Yes (Ollama) |
+| [RagOllama](#ragollama) | Full RAG chat using Ollama with phi-3.5-mini + Kernel Memory | Yes (Ollama) |
 | [RagFoundryLocal](#ragfoundrylocal) | Full RAG chat using Foundry Local with phi-3.5-mini | Yes (Foundry Local) |
 
 ---
@@ -64,11 +64,12 @@ dotnet run --project samples/RagChat
 
 ## RagOllama
 
-Full **Retrieval-Augmented Generation** combining LocalEmbeddings for retrieval and **Ollama** for LLM responses.
+Full **Retrieval-Augmented Generation** combining LocalEmbeddings for retrieval and **Ollama** for LLM responses. Uses the companion package `elbruno.LocalEmbeddings.KernelMemory` to integrate local ONNX embeddings with [Microsoft Kernel Memory](https://github.com/microsoft/kernel-memory).
 
-- **Embeddings:** `LocalEmbeddingGenerator` (all-MiniLM-L6-v2, runs locally via ONNX)
+- **Embeddings:** `LocalEmbeddingGenerator` via `.WithLocalEmbeddings()` (all-MiniLM-L6-v2, runs locally via ONNX)
 - **Chat LLM:** phi-3.5-mini via `OllamaSharp` (`IChatClient`)
-- **Flow:** Embed documents → embed user query → find top-3 similar docs → build prompt with context → stream the LLM response
+- **Semantic Memory:** Microsoft Kernel Memory with `elbruno.LocalEmbeddings.KernelMemory` adapter
+- **Flow:** Import documents into Kernel Memory → ask a question → KM retrieves relevant chunks → generates an answer via the Ollama LLM
 
 ### Prerequisites
 

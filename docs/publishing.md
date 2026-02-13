@@ -1,6 +1,13 @@
 # Publishing a New Version to NuGet
 
-This guide covers how to publish a new version of **elbruno.LocalEmbeddings** to NuGet.org using GitHub Actions and NuGet Trusted Publishing (keyless, OIDC-based).
+This guide covers how to publish new versions of **elbruno.LocalEmbeddings** and **elbruno.LocalEmbeddings.KernelMemory** to NuGet.org using GitHub Actions and NuGet Trusted Publishing (keyless, OIDC-based).
+
+## Packages
+
+| Package | Project | Description |
+|---------|---------|-------------|
+| `elbruno.LocalEmbeddings` | `src/LocalEmbeddings/` | Core library — local ONNX embedding generation |
+| `elbruno.LocalEmbeddings.KernelMemory` | `src/LocalEmbeddings.KernelMemory/` | Companion — Kernel Memory adapter + extensions |
 
 ## Prerequisites (One-Time Setup)
 
@@ -32,7 +39,10 @@ These steps only need to be done once.
 
 This is the standard workflow — the version is derived from the release tag.
 
-1. **Update the version** in `src/LocalEmbeddings/LocalEmbeddings.csproj`:
+1. **Update the version** in both csproj files:
+
+   - `src/LocalEmbeddings/LocalEmbeddings.csproj`
+   - `src/LocalEmbeddings.KernelMemory/LocalEmbeddings.KernelMemory.csproj`
 
    ```xml
    <Version>1.2.0</Version>

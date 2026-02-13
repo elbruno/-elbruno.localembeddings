@@ -27,18 +27,25 @@ dotnet test
 ├── LocalEmbeddings.slnx       # Solution file
 ├── Directory.Build.props       # Shared build properties
 ├── docs/                       # Extended documentation
-├── src/LocalEmbeddings/        # Main library source
-├── tests/LocalEmbeddings.Tests/ # Unit tests
+├── src/
+│   ├── LocalEmbeddings/               # Core library (M.E.AI + ONNX)
+│   └── LocalEmbeddings.KernelMemory/   # Kernel Memory companion package
+├── tests/
+│   ├── LocalEmbeddings.Tests/                # Core unit tests
+│   └── LocalEmbeddings.KernelMemory.Tests/   # KM adapter tests
 └── samples/                    # Sample applications
     ├── ConsoleApp/
-    └── RagChat/
+    ├── RagChat/
+    ├── RagOllama/
+    └── RagFoundryLocal/
 ```
 
 ## Guidelines
 
 - Keep the root directory clean — only README, LICENSE, solution, and build config files belong there.
 - All extended documentation goes in `docs/`.
-- The NuGet package ID is always `elbruno.LocalEmbeddings` (with the `elbruno.` prefix).
+- The NuGet package IDs are always prefixed with `elbruno.` (e.g., `elbruno.LocalEmbeddings`, `elbruno.LocalEmbeddings.KernelMemory`).
+- The core `elbruno.LocalEmbeddings` package must **not** depend on Kernel Memory — KM integration lives in the companion package.
 - Target .NET 10.0 or later.
 
 ## License

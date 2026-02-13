@@ -1,9 +1,9 @@
-#pragma warning disable SKEXP0001, SKEXP0003, SKEXP0010, SKEXP0011, SKEXP0050, SKEXP0052, SKEXP0070
+#pragma warning disable CS8602
 
+using LocalEmbeddings.KernelMemory.Extensions;
 using Microsoft.KernelMemory;
 using Microsoft.KernelMemory.AI.Ollama;
 using OllamaSharp;
-using OllamaSharp.Models.Chat;
 
 var ollamaEndpoint = "http://localhost:11434";
 var modelIdChat = "phi3.5";
@@ -22,11 +22,16 @@ SpectreConsoleOutput.DisplayTitleH3("2nd approach will be to add facts to a sema
 SpectreConsoleOutput.DisplayTitleH2($"{modelIdChat} response (no memory).");
 
 // set up the client
-var ollama = new OllamaApiClient(ollamaEndpoint);
-ollama.SelectedModel = modelIdChat;
+var ollama = new OllamaApiClient(ollamaEndpoint)
+{
+    SelectedModel = modelIdChat
+};
 
 await foreach (var answerToken in ollama.GenerateAsync(question))
-    Console.Write(answerToken);
+{
+    Console.Write(answerToken.Response.ToString());
+}
+;
 
 // separator
 Console.WriteLine("");
@@ -37,9 +42,10 @@ var configOllamaKernelMemory = new OllamaConfig
     Endpoint = ollamaEndpoint,
     TextModel = new OllamaModelConfig(modelIdChat)
 };
+
 var memory = new KernelMemoryBuilder()
     .WithOllamaTextGeneration(configOllamaKernelMemory)
-    .WithCustomEmbeddingGenerator()
+    .WithLocalEmbeddings()
     .Build();
 
 var informationList = new List<string>

@@ -7,6 +7,7 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/LocalEmbeddings/LocalEmbeddings.csproj" />
+    <Project Path="src/LocalEmbeddings.KernelMemory/LocalEmbeddings.KernelMemory.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/LocalEmbeddings.Tests/LocalEmbeddings.Tests.csproj" />

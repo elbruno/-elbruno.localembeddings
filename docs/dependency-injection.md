@@ -69,3 +69,56 @@ public sealed class MyService(
     }
 }
 ```
+
+---
+
+## Kernel Memory Integration
+
+The companion package `elbruno.LocalEmbeddings.KernelMemory` adds DI extensions that register both the M.E.AI `IEmbeddingGenerator` and Kernel Memory's `ITextEmbeddingGenerator` from a single call.
+
+```bash
+dotnet add package elbruno.LocalEmbeddings.KernelMemory
+```
+
+### 1) Basic registration
+
+```csharp
+using LocalEmbeddings.KernelMemory.Extensions;
+
+services.AddLocalEmbeddingsWithKernelMemory();
+```
+
+### 2) Configure with delegate
+
+```csharp
+services.AddLocalEmbeddingsWithKernelMemory(options =>
+{
+    options.ModelName = "sentence-transformers/all-MiniLM-L6-v2";
+    options.NormalizeEmbeddings = true;
+});
+```
+
+### 3) Pre-built options
+
+```csharp
+var options = new LocalEmbeddingsOptions
+{
+    ModelName = "sentence-transformers/all-MiniLM-L6-v2",
+    CacheDirectory = "/models/cache"
+};
+services.AddLocalEmbeddingsWithKernelMemory(options);
+```
+
+### 4) IConfiguration binding
+
+```csharp
+services.AddLocalEmbeddingsWithKernelMemory(
+    configuration.GetSection("LocalEmbeddings"));
+```
+
+After calling any `AddLocalEmbeddingsWithKernelMemory` overload, both interfaces resolve from the container:
+
+- `IEmbeddingGenerator<string, Embedding<float>>` — for M.E.AI consumers
+- `ITextEmbeddingGenerator` — for Kernel Memory consumers
+
+See [Kernel Memory Integration](kernel-memory-integration.md) for the full guide.

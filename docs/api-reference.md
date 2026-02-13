@@ -1,5 +1,12 @@
 # API Reference — elbruno.LocalEmbeddings
 
+## Packages
+
+| Package | Description |
+|---------|-------------|
+| `elbruno.LocalEmbeddings` | Core library — local ONNX embedding generation with M.E.AI |
+| `elbruno.LocalEmbeddings.KernelMemory` | Companion package — Kernel Memory `ITextEmbeddingGenerator` adapter + builder/DI extensions |
+
 ## LocalEmbeddingGenerator
 
 The main class for generating embeddings. Implements `IEmbeddingGenerator<string, Embedding<float>>`.
@@ -98,3 +105,107 @@ public static class ServiceCollectionExtensions
         IConfiguration configuration);
 }
 ```
+
+---
+
+## elbruno.LocalEmbeddings.KernelMemory
+
+Companion package providing Kernel Memory integration. Install separately:
+
+```bash
+dotnet add package elbruno.LocalEmbeddings.KernelMemory
+```
+
+### LocalEmbeddingTextGenerator
+
+Adapter that bridges `IEmbeddingGenerator<string, Embedding<float>>` (M.E.AI) to Kernel Memory’s `ITextEmbeddingGenerator`. Namespace: `LocalEmbeddings.KernelMemory`.
+
+```csharp
+public sealed class LocalEmbeddingTextGenerator : ITextEmbeddingGenerator, IDisposable
+{
+    // Constructor
+    public LocalEmbeddingTextGenerator(
+        IEmbeddingGenerator<string, Embedding<float>> generator,
+        int maxTokens = 512,
+        ITextTokenizer? customTokenizer = null,
+        bool ownsGenerator = false);
+
+    // Properties
+    public int MaxTokens { get; }
+
+    // Methods (ITextEmbeddingGenerator)
+    public Task<Embedding> GenerateEmbeddingAsync(
+        string text, CancellationToken cancellationToken = default);
+
+    // Methods (ITextTokenizer)
+    public int CountTokens(string text);
+    public IReadOnlyList<string> GetTokens(string text);
+
+    public void Dispose();
+}
+```
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `generator` | `IEmbeddingGenerator<string, Embedding<float>>` | — | The M.E.AI embedding generator to wrap |
+| `maxTokens` | `int` | `512` | Maximum tokens the model supports |
+| `customTokenizer` | `ITextTokenizer?` | `null` | Optional custom tokenizer for accurate token counting |
+| `ownsGenerator` | `bool` | `false` | Whether the adapter disposes the generator |
+
+### KernelMemoryBuilderExtensions
+
+Extension methods for `IKernelMemoryBuilder`. Namespace: `LocalEmbeddings.KernelMemory.Extensions`.
+
+```csharp
+public static class KernelMemoryBuilderExtensions
+{
+    // Default options (sentence-transformers/all-MiniLM-L6-v2)
+    public static IKernelMemoryBuilder WithLocalEmbeddings(
+        this IKernelMemoryBuilder builder);
+
+    // Pre-built options
+    public static IKernelMemoryBuilder WithLocalEmbeddings(
+        this IKernelMemoryBuilder builder,
+        LocalEmbeddingsOptions options);
+
+    // Delegate configuration
+    public static IKernelMemoryBuilder WithLocalEmbeddings(
+        this IKernelMemoryBuilder builder,
+        Action<LocalEmbeddingsOptions> configure);
+
+    // Wrap an existing IEmbeddingGenerator
+    public static IKernelMemoryBuilder WithLocalEmbeddings(
+        this IKernelMemoryBuilder builder,
+        IEmbeddingGenerator<string, Embedding<float>> generator,
+        int maxTokens = 512);
+}
+```
+
+### ServiceCollectionExtensions (Kernel Memory)
+
+Extension methods for `IServiceCollection` that register both M.E.AI and Kernel Memory interfaces. Namespace: `LocalEmbeddings.KernelMemory.Extensions`.
+
+```csharp
+public static class ServiceCollectionExtensions
+{
+    // Delegate configuration
+    public static IServiceCollection AddLocalEmbeddingsWithKernelMemory(
+        this IServiceCollection services,
+        Action<LocalEmbeddingsOptions>? configure = null);
+
+    // Pre-built options
+    public static IServiceCollection AddLocalEmbeddingsWithKernelMemory(
+        this IServiceCollection services,
+        LocalEmbeddingsOptions options);
+
+    // IConfiguration binding
+    public static IServiceCollection AddLocalEmbeddingsWithKernelMemory(
+        this IServiceCollection services,
+        IConfiguration configuration);
+}
+```
+
+After calling `AddLocalEmbeddingsWithKernelMemory`, both interfaces resolve from the container:
+
+- `IEmbeddingGenerator<string, Embedding<float>>` — for M.E.AI consumers
+- `ITextEmbeddingGenerator` — for Kernel Memory consumers
