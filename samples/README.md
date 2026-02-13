@@ -8,8 +8,8 @@ Four sample projects demonstrating LocalEmbeddings from basic usage to full RAG 
 |--------|--------------|---------------|
 | [ConsoleApp](#consoleapp) | Embedding basics: generation, similarity, search, DI | No |
 | [RagChat](#ragchat) | Semantic search Q&A over an in-memory FAQ dataset | No |
-| [RagOllama](#ragollama) | Full RAG chat using Ollama with phi-3.5-mini + Kernel Memory | Yes (Ollama) |
-| [RagFoundryLocal](#ragfoundrylocal) | Full RAG chat using Foundry Local with phi-3.5-mini | Yes (Foundry Local) |
+| [RagOllama](#ragollama) | Full RAG chat using Ollama with phi4-mini + Kernel Memory | Yes (Ollama) |
+| [RagFoundryLocal](#ragfoundrylocal) | Full RAG chat using Foundry Local with phi4-mini | Yes (Foundry Local) |
 
 ---
 
@@ -67,7 +67,7 @@ dotnet run --project samples/RagChat
 Full **Retrieval-Augmented Generation** combining LocalEmbeddings for retrieval and **Ollama** for LLM responses. Uses the companion package `ElBruno.LocalEmbeddings.KernelMemory` to integrate local ONNX embeddings with [Microsoft Kernel Memory](https://github.com/microsoft/kernel-memory).
 
 - **Embeddings:** `LocalEmbeddingGenerator` via `.WithLocalEmbeddings()` (all-MiniLM-L6-v2, runs locally via ONNX)
-- **Chat LLM:** phi-3.5-mini via `OllamaSharp` (`IChatClient`)
+- **Chat LLM:** phi4-mini via `OllamaSharp` (`IChatClient`)
 - **Semantic Memory:** Microsoft Kernel Memory with `ElBruno.LocalEmbeddings.KernelMemory` adapter
 - **Flow:** Import documents into Kernel Memory → ask a question → KM retrieves relevant chunks → generates an answer via the Ollama LLM
 
@@ -75,10 +75,10 @@ Full **Retrieval-Augmented Generation** combining LocalEmbeddings for retrieval 
 
 1. .NET 10 SDK
 2. [Ollama](https://ollama.com/) installed and running
-3. Pull the phi-3.5 model:
+3. Pull the [phi4-mini](https://ollama.com/library/phi4-mini) model:
 
 ```bash
-ollama pull phi3.5
+ollama pull phi4-mini
 ollama serve   # if not already running
 ```
 
@@ -95,14 +95,14 @@ dotnet run --project samples/RagOllama
 Same RAG pattern as RagOllama but using **Microsoft Foundry Local** instead of Ollama.
 
 - **Embeddings:** `LocalEmbeddingGenerator` (all-MiniLM-L6-v2, runs locally via ONNX)
-- **Chat LLM:** phi-3.5-mini via `FoundryLocalManager` → OpenAI-compatible endpoint → `IChatClient`
+- **Chat LLM:** phi4-mini via `FoundryLocalManager` → OpenAI-compatible endpoint → `IChatClient`
 - **Flow:** Same as RagOllama — embed, search, prompt, stream
 
 ### Prerequisites
 
 1. .NET 10 SDK
 2. [Foundry Local](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-local/overview) installed
-3. The phi-3.5-mini model available locally (Foundry Local handles download)
+3. The phi4-mini model available locally (Foundry Local handles download)
 
 ### Run
 
@@ -134,7 +134,7 @@ ConsoleApp / RagChat                    RagOllama / RagFoundryLocal
                                                   │
                                                   ▼
                                         ┌─────────────────────┐
-                                        │  phi-3.5-mini (LLM)  │
+                                        │  phi4-mini (LLM)     │
                                         │  via Ollama / Foundry │
                                         └────────┬────────────┘
                                                   │

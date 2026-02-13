@@ -52,8 +52,8 @@ See the [samples README](samples/README.md) for prerequisites and run instructio
 |--------|--------------|
 | [ConsoleApp](samples/ConsoleApp) | All the basics: single/batch embeddings, similarity, semantic search, DI |
 | [RagChat](samples/RagChat) | Embedding-only semantic search Q&A (no LLM needed) |
-| [RagOllama](samples/RagOllama) | Full RAG with Ollama + phi-3.5-mini + Kernel Memory |
-| [RagFoundryLocal](samples/RagFoundryLocal) | Full RAG with Foundry Local + phi-3.5-mini |
+| [RagOllama](samples/RagOllama) | Full RAG with Ollama + phi4-mini + Kernel Memory |
+| [RagFoundryLocal](samples/RagFoundryLocal) | Full RAG with Foundry Local + phi4-mini |
 
 ## Configuration
 

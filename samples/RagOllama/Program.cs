@@ -6,7 +6,7 @@ using Microsoft.KernelMemory.AI.Ollama;
 using OllamaSharp;
 
 var ollamaEndpoint = "http://localhost:11434";
-var modelIdChat = "phi3.5";
+var modelIdChat = "phi4-mini";
 var question = "What is Bruno's favourite super hero?";
 
 // --- Ask without memory ---

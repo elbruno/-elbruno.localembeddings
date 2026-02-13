@@ -141,7 +141,7 @@ User question
     → Embed the question (LocalEmbeddings)
     → Find similar documents (cosine similarity)
     → Build a prompt with the retrieved context
-    → Send to LLM (phi-3.5-mini)
+    → Send to LLM (phi4-mini)
     → Stream the response
 ```
 
@@ -149,7 +149,7 @@ Two complete RAG samples are included:
 
 | Sample | LLM Provider | How to Run |
 |--------|-------------|------------|
-| [RagOllama](../samples/RagOllama) | Ollama + `OllamaSharp` | `ollama pull phi3.5` then `dotnet run` |
+| [RagOllama](../samples/RagOllama) | Ollama + `OllamaSharp` | `ollama pull phi4-mini` then `dotnet run` |
 | [RagFoundryLocal](../samples/RagFoundryLocal) | Foundry Local + OpenAI client | Install Foundry Local then `dotnet run` |
 
 Both use `LocalEmbeddingGenerator` for embeddings and `IChatClient` (from `Microsoft.Extensions.AI`) for chat completions, so the RAG logic is identical — only the LLM provider changes.

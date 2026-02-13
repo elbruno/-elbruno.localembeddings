@@ -197,7 +197,7 @@ using Microsoft.KernelMemory.AI.Ollama;
 var config = new OllamaConfig
 {
     Endpoint = "http://localhost:11434",
-    TextModel = new OllamaModelConfig("phi3.5")
+    TextModel = new OllamaModelConfig("phi4-mini")
 };
 
 var memory = new KernelMemoryBuilder()
