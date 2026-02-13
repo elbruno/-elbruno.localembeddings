@@ -12,7 +12,8 @@
     <PackageProjectUrl>https://github.com/elbruno/elbruno.localembeddings</PackageProjectUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>0.5.0-preview</Version>
+    <PackageTags>embeddings;onnx;ai;local;microsoft-extensions-ai;sentence-transformers;nlp;machine-learning</PackageTags>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
