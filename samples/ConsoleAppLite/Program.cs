@@ -29,7 +29,10 @@ var options = new LocalEmbeddingsOptions
 {
     ModelName = "sentence-transformers/all-MiniLM-L6-v2",
     EnsureModelDownloaded = true,
-    MaxSequenceLength = 128
+    MaxSequenceLength = 128,
+    UseParallelExecution = false,
+    InterOpNumThreads = 1,
+    IntraOpNumThreads = 1
 };
 
 Console.WriteLine($"Initializing model: {options.ModelName}");

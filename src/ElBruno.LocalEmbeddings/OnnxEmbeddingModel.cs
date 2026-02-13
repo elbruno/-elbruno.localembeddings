@@ -36,10 +36,18 @@ public sealed class OnnxEmbeddingModel : IDisposable
     /// </summary>
     /// <param name="modelPath">The path to the ONNX model file.</param>
     /// <param name="normalizeEmbeddings">Whether to L2-normalize embeddings to unit length.</param>
+    /// <param name="useParallelExecution">Whether to use parallel execution mode in ONNX Runtime.</param>
+    /// <param name="interOpNumThreads">Optional inter-op thread count override.</param>
+    /// <param name="intraOpNumThreads">Optional intra-op thread count override.</param>
     /// <exception cref="ArgumentException">Thrown when the model path is null or empty.</exception>
     /// <exception cref="FileNotFoundException">Thrown when the model file does not exist.</exception>
     /// <exception cref="InvalidOperationException">Thrown when a model is already loaded.</exception>
-    public void Load(string modelPath, bool normalizeEmbeddings = false)
+    public void Load(
+        string modelPath,
+        bool normalizeEmbeddings = false,
+        bool useParallelExecution = true,
+        int? interOpNumThreads = null,
+        int? intraOpNumThreads = null)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
@@ -58,7 +66,14 @@ public sealed class OnnxEmbeddingModel : IDisposable
             throw new InvalidOperationException("A model is already loaded. Dispose this instance and create a new one to load a different model.");
         }
 
+        ValidateThreadCount(interOpNumThreads, nameof(interOpNumThreads));
+        ValidateThreadCount(intraOpNumThreads, nameof(intraOpNumThreads));
+
         EnsureLinuxOnnxRuntimeAliases();
+
+        var defaultThreadCount = Environment.ProcessorCount;
+        var resolvedInterOpNumThreads = interOpNumThreads ?? defaultThreadCount;
+        var resolvedIntraOpNumThreads = intraOpNumThreads ?? defaultThreadCount;
 
         SessionOptions sessionOptions;
         try
@@ -66,9 +81,9 @@ public sealed class OnnxEmbeddingModel : IDisposable
             sessionOptions = new SessionOptions
             {
                 GraphOptimizationLevel = GraphOptimizationLevel.ORT_ENABLE_ALL,
-                ExecutionMode = ExecutionMode.ORT_PARALLEL,
-                InterOpNumThreads = Environment.ProcessorCount,
-                IntraOpNumThreads = Environment.ProcessorCount
+                ExecutionMode = useParallelExecution ? ExecutionMode.ORT_PARALLEL : ExecutionMode.ORT_SEQUENTIAL,
+                InterOpNumThreads = resolvedInterOpNumThreads,
+                IntraOpNumThreads = resolvedIntraOpNumThreads
             };
         }
         catch (Exception ex) when (ex is DllNotFoundException or TypeInitializationException)
@@ -132,6 +147,14 @@ public sealed class OnnxEmbeddingModel : IDisposable
         {
             TryCreateAliasCopy(canonicalLibraryPath, Path.Combine(nativeDirectory, aliasName));
             TryCreateAliasCopy(canonicalLibraryPath, Path.Combine(baseDirectory, aliasName));
+        }
+    }
+
+    private static void ValidateThreadCount(int? threadCount, string paramName)
+    {
+        if (threadCount is <= 0)
+        {
+            throw new ArgumentOutOfRangeException(paramName, "Thread count must be greater than zero when specified.");
         }
     }
 
