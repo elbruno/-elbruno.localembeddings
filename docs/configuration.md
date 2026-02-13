@@ -10,44 +10,9 @@ var options = new LocalEmbeddingsOptions
     ModelName = "sentence-transformers/all-MiniLM-L6-v2",
     CacheDirectory = @"C:\models\cache",
     MaxSequenceLength = 256,
-    EnsureModelDownloaded = true
+    EnsureModelDownloaded = true,
+    NormalizeEmbeddings = false
 };
-```
-
-## Dependency Injection
-
-### Basic Registration
-
-```csharp
-using LocalEmbeddings.Extensions;
-
-services.AddLocalEmbeddings();
-```
-
-### With Configuration Action
-
-```csharp
-services.AddLocalEmbeddings(options =>
-{
-    options.ModelName = "sentence-transformers/all-MiniLM-L6-v2";
-    options.MaxSequenceLength = 256;
-});
-```
-
-### From Configuration (appsettings.json)
-
-```json
-{
-  "LocalEmbeddings": {
-    "ModelName": "sentence-transformers/all-MiniLM-L6-v2",
-    "MaxSequenceLength": 256,
-    "CacheDirectory": "/path/to/cache"
-  }
-}
-```
-
-```csharp
-services.AddLocalEmbeddings(configuration.GetSection("LocalEmbeddings"));
 ```
 
 ## Supported Models
