@@ -1,12 +1,13 @@
 # Samples — ElBruno.LocalEmbeddings
 
-Six sample projects demonstrating LocalEmbeddings from basic usage to full RAG with a local LLM.
+Seven sample projects demonstrating LocalEmbeddings from basic usage to full RAG with a local LLM.
 
 ## Overview
 
 | Sample | What It Shows | LLM Required? |
 |--------|--------------|---------------|
 | [HelloWorldAltModel](#helloworldaltmodel) | Minimal hello world with a non-default free model | No |
+| [RaspberryPiTiny](#raspberrypitiny) | Ultra-small sample for Raspberry Pi and low-memory devices | No |
 | [ConsoleAppLite](#consoleapplite) | Lightweight menu sample for low-resource devices | No |
 | [ConsoleApp](#consoleapp) | Embedding basics: generation, similarity, search, DI | No |
 | [RagChat](#ragchat) | Semantic search Q&A over an in-memory FAQ dataset | No |
@@ -31,6 +32,34 @@ Simple hello world sample using a free non-default model:
 
 ```bash
 dotnet run --project samples/HelloWorldAltModel
+```
+
+---
+
+## RaspberryPiTiny
+
+Smallest sample focused on device stability.
+
+- Default mode runs **one** embedding and exits
+- Optional mode computes similarity for **two** short texts
+- Uses conservative runtime settings (`ORT_SEQUENTIAL`, one thread)
+
+### Prerequisites
+
+- .NET 10 SDK
+
+### Run
+
+Default (single embedding):
+
+```bash
+dotnet run --project samples/RaspberryPiTiny
+```
+
+Similarity mode (two embeddings + cosine similarity):
+
+```bash
+dotnet run --project samples/RaspberryPiTiny -- sim
 ```
 
 ---
