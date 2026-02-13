@@ -19,7 +19,7 @@ A .NET library for generating text embeddings locally using ONNX Runtime and Mic
 - **Restore dependencies:** `dotnet restore`
 - **Clean:** `dotnet clean`
 
-All commands should be run from the repository root (`/home/runner/work/elbruno.localembeddings/elbruno.localembeddings`).
+All commands should be run from the repository root.
 
 ### Build Configuration
 - Uses .NET 10.0 (`net10.0`)
