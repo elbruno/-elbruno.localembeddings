@@ -11,11 +11,12 @@ A .NET library for generating text embeddings locally using ONNX Runtime and Mic
 - **Microsoft.Extensions.AI Integration** — Implements `IEmbeddingGenerator<string, Embedding<float>>`
 - **Kernel Memory Integration** — Companion package `ElBruno.LocalEmbeddings.KernelMemory` provides a native `ITextEmbeddingGenerator` adapter for [Microsoft Kernel Memory](https://github.com/microsoft/kernel-memory)
 - **VectorData Integration** — Companion package `ElBruno.LocalEmbeddings.VectorData` adds DI helpers for `Microsoft.Extensions.VectorData` (`VectorStore` and typed collections)
+- **Built-in In-Memory Vector Store** — `ElBruno.LocalEmbeddings.VectorData` includes `InMemoryVectorStore` (no Semantic Kernel connector dependency required)
 - **HuggingFace Model Support** — Use popular sentence transformer models from HuggingFace Hub
 - **Automatic Model Caching** — Models are downloaded once and cached locally
 - **Dependency Injection Support** — First-class `IServiceCollection` integration
 - **Single-String Convenience API** — `GenerateAsync("text")` and `GenerateEmbeddingAsync("text")` — no array wrapping needed
-- **Similarity Helpers** — Cosine similarity, all-pairs `Similarity(...)` matrix, and `FindClosest(...)` for semantic search
+- **Similarity Helpers** — Cosine similarity, all-pairs `Similarity(...)` matrix, and one-line `FindClosestAsync(...)` semantic search
 - **Thread-Safe & Batched** — Concurrent generation and efficient multi-text processing
 
 ## Installation
@@ -64,6 +65,28 @@ using ElBruno.LocalEmbeddings.Extensions;
 var pair = await generator.GenerateAsync(["I love coding", "I enjoy programming"]);
 var score = pair[0].CosineSimilarity(pair[1]);
 Console.WriteLine(score);
+```
+
+### 4) Semantic search in one line
+
+```csharp
+var corpus = new[]
+{
+    "Python for data science",
+    "JavaScript for web apps",
+    "Swift for iOS development"
+};
+
+var corpusEmbeddings = await generator.GenerateAsync(corpus);
+var results = await generator.FindClosestAsync(
+    "best language for websites",
+    corpus,
+    corpusEmbeddings,
+    topK: 2,
+    minScore: 0.2f);
+
+foreach (var result in results)
+    Console.WriteLine($"{result.Score:F3} - {result.Text}");
 ```
 
 For custom models and runtime behavior, use the options-based constructor:

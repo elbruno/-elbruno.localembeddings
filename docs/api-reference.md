@@ -114,6 +114,25 @@ public static class EmbeddingGeneratorExtensions
         string value,
         EmbeddingGenerationOptions? options = null,
         CancellationToken cancellationToken = default);
+
+    public static Task<IReadOnlyList<SemanticSearchResult>> FindClosestAsync(
+        this IEmbeddingGenerator<string, Embedding<float>> generator,
+        string query,
+        IReadOnlyList<string> corpus,
+        IReadOnlyList<Embedding<float>>? corpusEmbeddings = null,
+        int topK = 3,
+        float? minScore = null,
+        CancellationToken cancellationToken = default);
+
+    public static Task<IReadOnlyList<SemanticSearchResult>> FindClosestAsync<T>(
+        this IEmbeddingGenerator<string, Embedding<float>> generator,
+        string query,
+        IReadOnlyList<T> corpus,
+        Func<T, string> textSelector,
+        IReadOnlyList<Embedding<float>>? corpusEmbeddings = null,
+        int topK = 3,
+        float? minScore = null,
+        CancellationToken cancellationToken = default);
 }
 ```
 
@@ -133,6 +152,14 @@ var results = await generator.GenerateAsync(new[] { "text1", "text2", "text3" })
 ```
 
 > **Tip:** Use `GenerateEmbeddingAsync` when you have a single text and want the embedding directly. Use the batch `GenerateAsync(IEnumerable<string>)` when processing multiple texts for better throughput.
+
+### SemanticSearchResult
+
+```csharp
+public sealed record SemanticSearchResult(string Text, int Index, float Score);
+```
+
+Represents a semantic-search match from a corpus, including matched text, source index, and cosine similarity score.
 
 ## EmbeddingExtensions
 
@@ -158,6 +185,12 @@ public static class EmbeddingExtensions
         Embedding<float> query,
         int topK = 5,
         float minScore = 0.0f);
+
+    public static List<(int Index, float Score)> FindClosest(
+        this Embedding<float> queryEmbedding,
+        IReadOnlyList<Embedding<float>> corpusEmbeddings,
+        int topK = 3,
+        float? minScore = null);
 }
 ```
 
@@ -332,6 +365,18 @@ Extension methods for `IServiceCollection` in namespace `ElBruno.LocalEmbeddings
 ```csharp
 public static class ServiceCollectionExtensions
 {
+    public static IServiceCollection AddLocalEmbeddingsWithInMemoryVectorStore(
+        this IServiceCollection services,
+        Action<LocalEmbeddingsOptions>? configure = null);
+
+    public static IServiceCollection AddLocalEmbeddingsWithInMemoryVectorStore(
+        this IServiceCollection services,
+        LocalEmbeddingsOptions options);
+
+    public static IServiceCollection AddLocalEmbeddingsWithInMemoryVectorStore(
+        this IServiceCollection services,
+        IConfiguration configuration);
+
     public static IServiceCollection AddLocalEmbeddingsWithVectorStore(
         this IServiceCollection services,
         Func<IServiceProvider, VectorStore> vectorStoreFactory,

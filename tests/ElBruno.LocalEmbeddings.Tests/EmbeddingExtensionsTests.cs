@@ -115,5 +115,69 @@ public class EmbeddingExtensionsTests
         Assert.Equal(expected, similarity, 4);
     }
 
+    [Fact]
+    public void FindClosest_WithPrecomputedCorpus_ReturnsTopKOrdered()
+    {
+        var query = CreateEmbedding([1f, 0f]);
+        var corpus = new List<Embedding<float>>
+        {
+            CreateEmbedding([1f, 0f]),
+            CreateEmbedding([0.8f, 0.2f]),
+            CreateEmbedding([0f, 1f])
+        };
+
+        var results = query.FindClosest(corpus, topK: 2);
+
+        Assert.Equal(2, results.Count);
+        Assert.Equal(0, results[0].Index);
+        Assert.Equal(1, results[1].Index);
+        Assert.True(results[0].Score >= results[1].Score);
+    }
+
+    [Fact]
+    public void FindClosest_WithEqualScores_UsesStableIndexTiebreak()
+    {
+        var query = CreateEmbedding([1f, 0f]);
+        var corpus = new List<Embedding<float>>
+        {
+            CreateEmbedding([1f, 0f]),
+            CreateEmbedding([1f, 0f]),
+            CreateEmbedding([0f, 1f])
+        };
+
+        var results = query.FindClosest(corpus, topK: 2);
+
+        Assert.Equal(2, results.Count);
+        Assert.Equal(0, results[0].Index);
+        Assert.Equal(1, results[1].Index);
+    }
+
+    [Fact]
+    public void FindClosest_WithMinScore_FiltersResults()
+    {
+        var query = CreateEmbedding([1f, 0f]);
+        var corpus = new List<Embedding<float>>
+        {
+            CreateEmbedding([1f, 0f]),
+            CreateEmbedding([0f, 1f])
+        };
+
+        var results = query.FindClosest(corpus, topK: 10, minScore: 0.5f);
+
+        Assert.Single(results);
+        Assert.Equal(0, results[0].Index);
+    }
+
+    [Theory]
+    [InlineData(0)]
+    [InlineData(-1)]
+    public void FindClosest_WithInvalidTopK_ThrowsArgumentOutOfRangeException(int topK)
+    {
+        var query = CreateEmbedding([1f, 0f]);
+        var corpus = new List<Embedding<float>> { CreateEmbedding([1f, 0f]) };
+
+        Assert.Throws<ArgumentOutOfRangeException>(() => query.FindClosest(corpus, topK));
+    }
+
     private static Embedding<float> CreateEmbedding(float[] vector) => new(vector);
 }

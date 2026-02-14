@@ -91,7 +91,7 @@ Batching is more efficient than calling `GenerateAsync` once per string because 
 
 ## Step 4: Semantic Search — Find Relevant Documents
 
-Use `FindClosest` to search a collection by meaning instead of keywords:
+Use `FindClosestAsync` to search a collection by meaning instead of keywords:
 
 ```csharp
 using ElBruno.LocalEmbeddings.Extensions;
@@ -107,19 +107,20 @@ var docs = new[]
 };
 var docEmbeddings = await generator.GenerateAsync(docs);
 
-// Pair each document with its embedding
-var indexed = docs.Zip(docEmbeddings, (text, emb) => (text, emb)).ToList();
+// Search by meaning (one-line helper)
+var results = await generator.FindClosestAsync(
+    query: "What language for building websites?",
+    corpus: docs,
+    corpusEmbeddings: docEmbeddings,
+    topK: 2,
+    minScore: 0.3f);
 
-// Search by meaning
-var queryEmbedding = await generator.GenerateEmbeddingAsync("What language for building websites?");
-var results = indexed.FindClosest(queryEmbedding, topK: 2, minScore: 0.3f);
-
-foreach (var (text, score) in results)
-    Console.WriteLine($"  {score:P0} — {text}");
+foreach (var result in results)
+    Console.WriteLine($"  {result.Score:P0} — {result.Text}");
 // Output: JavaScript for web apps ranks highest
 ```
 
-`FindClosest` computes cosine similarity against every item and returns the top matches above the minimum score threshold.
+`FindClosestAsync` computes cosine similarity against every item and returns the top matches above the minimum score threshold.
 
 ## Step 5: Dependency Injection — Use in Real Applications
 
@@ -166,13 +167,12 @@ dotnet add package ElBruno.LocalEmbeddings.VectorData
 using ElBruno.LocalEmbeddings.VectorData.Extensions;
 using Microsoft.Extensions.VectorData;
 
-services.AddLocalEmbeddingsWithVectorStore(
-    _ => CreateYourVectorStore(), // Replace with your concrete VectorStore provider factory
+services.AddLocalEmbeddingsWithInMemoryVectorStore(
     options => options.ModelName = "sentence-transformers/all-MiniLM-L6-v2")
     .AddVectorStoreCollection<int, ProductRecord>("products");
 ```
 
-This keeps embedding generation local while aligning storage/search with the standard `Microsoft.Extensions.VectorData` abstractions.
+This keeps embedding generation local while providing a dependency-light in-memory vector store implementation aligned with the standard `Microsoft.Extensions.VectorData` abstractions.
 
 ## Step 7: RAG — Combine with a Local LLM
 
