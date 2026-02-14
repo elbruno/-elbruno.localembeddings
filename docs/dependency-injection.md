@@ -59,12 +59,20 @@ services.AddLocalEmbeddings(configuration.GetSection("LocalEmbeddings"));
 ## Injecting the generator
 
 ```csharp
-public sealed class MyService(
-    IEmbeddingGenerator<string, Embedding<float>> embeddings)
+using Microsoft.Extensions.AI;
+
+public sealed class MyService
 {
+    private readonly IEmbeddingGenerator<string, Embedding<float>> _embeddings;
+
+    public MyService(IEmbeddingGenerator<string, Embedding<float>> embeddings)
+    {
+        _embeddings = embeddings;
+    }
+
     public async Task<float[]> GetEmbeddingAsync(string text)
     {
-        var result = await embeddings.GenerateAsync([text]);
+        var result = await _embeddings.GenerateAsync([text]);
         return result[0].Vector.ToArray();
     }
 }
@@ -123,6 +131,8 @@ After calling any `AddLocalEmbeddingsWithKernelMemory` overload, both interfaces
 
 See [Kernel Memory Integration](kernel-memory-integration.md) for the full guide.
 
+For retrieval-only pipelines built with `KernelMemoryBuilder`, use `WithLocalEmbeddingsSearchOnly()` to disable text generation requirements while keeping local embedding support.
+
 ---
 
 ## VectorData Integration
@@ -139,7 +149,7 @@ dotnet add package ElBruno.LocalEmbeddings.VectorData
 using ElBruno.LocalEmbeddings.VectorData.Extensions;
 
 services.AddLocalEmbeddingsWithVectorStore(
-    _ => CreateYourVectorStore(),
+    _ => CreateYourVectorStore(), // Replace with your concrete VectorStore provider factory
     options =>
     {
         options.ModelName = "sentence-transformers/all-MiniLM-L6-v2";

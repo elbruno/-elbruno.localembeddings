@@ -21,6 +21,13 @@ The simplest way to use local embeddings with Kernel Memory:
 ```csharp
 using ElBruno.LocalEmbeddings.KernelMemory.Extensions;
 using Microsoft.KernelMemory;
+using Microsoft.KernelMemory.AI.Ollama;
+
+var config = new OllamaConfig
+{
+    Endpoint = "http://localhost:11434",
+    TextModel = new OllamaModelConfig("phi4-mini")
+};
 
 var memory = new KernelMemoryBuilder()
     .WithLocalEmbeddings()          // <-- one line!
@@ -34,6 +41,8 @@ await memory.ImportTextAsync("Bruno's favourite super hero is Invincible", "doc1
 var answer = await memory.AskAsync("What is Bruno's favourite super hero?");
 Console.WriteLine(answer.Result);
 ```
+
+> **Tip:** If you only need retrieval/search (no answer generation), use `WithLocalEmbeddingsSearchOnly()` instead.
 
 ## Builder Overloads
 
@@ -75,6 +84,16 @@ builder.WithLocalEmbeddings(existingGenerator, maxTokens: 512);
 ```
 
 The adapter does **not** take ownership — the caller manages the generator's lifecycle.
+
+### Search-only mode (no text generation required)
+
+If your scenario is retrieval/search only, you can explicitly disable text generation and still use local embeddings:
+
+```csharp
+builder.WithLocalEmbeddingsSearchOnly();
+```
+
+This helper configures Kernel Memory with `WithoutTextGenerator()` and registers local embeddings, so `Build()` works for search-only pipelines.
 
 ## Dependency Injection
 
@@ -144,7 +163,7 @@ The companion package provides a thin adapter layer:
 - Implements Kernel Memory's `ITextEmbeddingGenerator` (which includes `ITextTokenizer`)
 - Wraps any `IEmbeddingGenerator<string, Embedding<float>>` — not just `LocalEmbeddingGenerator`
 - Converts M.E.AI `Embedding<float>` to KM `Embedding` (both wrap `ReadOnlyMemory<float>`)
-- Token counting uses a word-boundary heuristic by default; supply a custom `ITextTokenizer` for precise counts
+- Token counting uses tokenizer-backed counting automatically when wrapping `LocalEmbeddingGenerator`; for other generator types, it falls back to a word-boundary heuristic (or you can supply a custom `ITextTokenizer`)
 - Thread-safe when the underlying generator is thread-safe
 
 ### Why a Separate Package?
@@ -161,6 +180,13 @@ If you previously used `WithCustomEmbeddingGenerator<T>()` directly:
 using ElBruno.LocalEmbeddings;
 using Microsoft.Extensions.AI;
 using Microsoft.KernelMemory;
+using Microsoft.KernelMemory.AI.Ollama;
+
+var config = new OllamaConfig
+{
+    Endpoint = "http://localhost:11434",
+    TextModel = new OllamaModelConfig("phi4-mini")
+};
 
 using var generator = new LocalEmbeddingGenerator();
 
@@ -175,6 +201,13 @@ var memory = new KernelMemoryBuilder()
 ```csharp
 using ElBruno.LocalEmbeddings.KernelMemory.Extensions;
 using Microsoft.KernelMemory;
+using Microsoft.KernelMemory.AI.Ollama;
+
+var config = new OllamaConfig
+{
+    Endpoint = "http://localhost:11434",
+    TextModel = new OllamaModelConfig("phi4-mini")
+};
 
 var memory = new KernelMemoryBuilder()
     .WithOllamaTextGeneration(config)
