@@ -25,7 +25,22 @@ var services = new ServiceCollection();
 
 services.AddLocalEmbeddingsWithInMemoryVectorStore(options =>
 {
+    // Change this model name to try different embedding models from Hugging Face.
+    // Model cards:
+    // - sentence-transformers/all-MiniLM-L6-v2      https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2
+    // - sentence-transformers/all-MiniLM-L12-v2     https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2
+    // - sentence-transformers/paraphrase-MiniLM-L6-v2 https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2
+    // - BAAI/bge-large-en-v1.5                      https://huggingface.co/BAAI/bge-large-en-v1.5
+    // - intfloat/e5-large-v2                        https://huggingface.co/intfloat/e5-large-v2
+    //
+    // Example quick switches:
     options.ModelName = "sentence-transformers/all-MiniLM-L6-v2";
+
+    // options.ModelName = "sentence-transformers/all-MiniLM-L12-v2";
+    // options.ModelName = "sentence-transformers/paraphrase-MiniLM-L6-v2";
+    // options.ModelName = "BAAI/bge-large-en-v1.5";
+    // options.ModelName = "intfloat/e5-large-v2";
+
     options.MaxSequenceLength = 256;
     options.EnsureModelDownloaded = true;
 })

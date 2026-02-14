@@ -180,6 +180,36 @@ dotnet run --project samples/RagChat
 | `list`  | Show all indexed documents |
 | `quit`  | Exit |
 
+### Try these models
+
+You can quickly test different embedding models by changing `options.ModelName` in `samples/RagChat/Program.cs`.
+
+Example:
+
+```csharp
+options.ModelName = "sentence-transformers/all-MiniLM-L12-v2";
+```
+
+Recommended models to try:
+
+Estimated download sizes below are approximate and can vary by ONNX variant and tokenizer assets.
+
+- [`sentence-transformers/all-MiniLM-L6-v2` (default, ~90–100 MB)](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)  
+    Fast, lightweight baseline for most scenarios.
+- [`sentence-transformers/all-MiniLM-L12-v2` (~130–140 MB)](https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2)  
+    Often better semantic quality with a small latency/memory increase.
+- [`sentence-transformers/paraphrase-MiniLM-L6-v2` (~90–100 MB)](https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2)  
+    Good alternative for paraphrase-heavy or FAQ-style retrieval tests.
+- [`BAAI/bge-large-en-v1.5` (large, ~1.3 GB)](https://huggingface.co/BAAI/bge-large-en-v1.5)  
+    Higher-quality retrieval candidate when you can trade more memory and latency for quality.
+- [`intfloat/e5-large-v2` (large, ~1.3 GB)](https://huggingface.co/intfloat/e5-large-v2)  
+    Strong retrieval model option for larger-scale semantic matching tests.
+
+Notes:
+
+- The first run of a new model downloads and caches model artifacts.
+- Keep `MaxSequenceLength` consistent when comparing models so results are easier to benchmark.
+
 ---
 
 ## RagOllama

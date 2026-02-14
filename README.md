@@ -103,7 +103,7 @@ Prefer a containerized dev environment? See the Dev Container section in the [Co
 See the [samples README](samples/README.md) for prerequisites and run instructions.
 
 | Sample | What It Shows |
-|--------|--------------|
+| ------ | ------------- |
 | [HelloWorldAltModel](samples/HelloWorldAltModel) | Minimal hello world with `sentence-transformers/all-MiniLM-L12-v2` |
 | [ConsoleApp](samples/ConsoleApp) | All the basics: single/batch embeddings, similarity, semantic search, DI |
 | [RagChat](samples/RagChat) | Embedding-only semantic search Q&A using shared VectorData `InMemoryVectorStore` (no LLM needed) |
@@ -125,10 +125,20 @@ var options = new LocalEmbeddingsOptions
 
 See [Configuration docs](docs/configuration.md) for supported models, local model paths, and cache locations.
 
+### Common model options (with model cards)
+
+Estimated download sizes below are approximate and can vary by ONNX variant (fp32/int8) and tokenizer assets.
+
+- [`sentence-transformers/all-MiniLM-L6-v2` (default, ~90–100 MB)](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)
+- [`sentence-transformers/all-MiniLM-L12-v2` (~130–140 MB)](https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2)
+- [`sentence-transformers/paraphrase-MiniLM-L6-v2` (~90–100 MB)](https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2)
+- [`BAAI/bge-large-en-v1.5` (large, ~1.3 GB)](https://huggingface.co/BAAI/bge-large-en-v1.5)
+- [`intfloat/e5-large-v2` (large, ~1.3 GB)](https://huggingface.co/intfloat/e5-large-v2)
+
 ## Documentation
 
 | Topic | Description |
-|-------|-------------|
+| ----- | ----------- |
 | [Getting Started](docs/getting-started.md) | Step-by-step guide from hello world to RAG |
 | [API Reference](docs/api-reference.md) | Classes, methods, and extension methods |
 | [Configuration](docs/configuration.md) | Options, supported models, cache locations |
