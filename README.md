@@ -51,6 +51,8 @@ For custom models and runtime behavior, use the options-based constructor:
 
 Want to go further? See the [Getting Started guide](docs/getting-started.md) for a step-by-step walkthrough — from cosine similarity to semantic search, dependency injection, and full RAG with a local LLM.
 
+Prefer a containerized dev environment? See the Dev Container section in the [Contributing guide](docs/contributing.md#dev-container-vs-code).
+
 ## Samples
 
 See the [samples README](samples/README.md) for prerequisites and run instructions.

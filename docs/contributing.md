@@ -19,6 +19,35 @@ dotnet build
 dotnet test
 ```
 
+## Dev Container (VS Code)
+
+If you prefer a consistent, containerized setup, this repository includes a VS Code Dev Container in `.devcontainer/devcontainer.json`.
+
+### Prerequisites
+
+- Docker Desktop (or compatible Docker runtime)
+- VS Code with the Dev Containers extension
+
+### Use it
+
+1. Open the repository in VS Code.
+2. Run **Dev Containers: Reopen in Container**.
+3. Wait for the first setup to complete (`dotnet restore` runs automatically).
+
+### Notes
+
+- The container targets .NET 10 to match project and CI expectations.
+- NuGet packages and model files are stored in persistent Docker volumes for faster rebuilds.
+- The first embedding run may download model files from Hugging Face and can take longer.
+
+### Validate inside the container
+
+```bash
+dotnet restore
+dotnet build
+dotnet test
+```
+
 ## Repository Structure
 
 ```
@@ -26,6 +55,7 @@ dotnet test
 ├── LICENSE                    # MIT license
 ├── LocalEmbeddings.slnx       # Solution file
 ├── Directory.Build.props       # Shared build properties
+├── .devcontainer/              # VS Code development container config
 ├── docs/                       # Extended documentation
 ├── src/
 │   ├── ElBruno.LocalEmbeddings/               # Core library (M.E.AI + ONNX)

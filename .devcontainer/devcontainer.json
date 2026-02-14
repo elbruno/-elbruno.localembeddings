@@ -1,0 +1,29 @@
+{
+    "name": "ElBruno.LocalEmbeddings (.NET 10)",
+    "image": "mcr.microsoft.com/devcontainers/dotnet:1-10.0-bookworm",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    "remoteUser": "vscode",
+    "containerEnv": {
+        "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+        "DOTNET_NOLOGO": "1",
+        "NUGET_PACKAGES": "/home/vscode/.nuget/packages",
+        "XDG_DATA_HOME": "/home/vscode/.local/share"
+    },
+    "mounts": [
+        "source=elbruno-localembeddings-nuget,target=/home/vscode/.nuget/packages,type=volume",
+        "source=elbruno-localembeddings-models,target=/home/vscode/.local/share/LocalEmbeddings/models,type=volume"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-dotnettools.csdevkit",
+                "ms-dotnettools.csharp",
+                "EditorConfig.EditorConfig"
+            ],
+            "settings": {
+                "dotnet.defaultSolution": "ElBruno.LocalEmbeddings.slnx"
+            }
+        }
+    },
+    "postCreateCommand": "dotnet restore"
+}
