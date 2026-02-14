@@ -160,6 +160,141 @@ All other documentation goes in the `docs/` folder:
 9. **Keep the repository root clean** — only essential files in root, extended docs in `docs/`
 10. **Update documentation** when making API changes — particularly README.md and relevant docs in `docs/`
 
+## Boundaries and Restrictions
+
+### Do Not Modify
+- **`.github/` configuration files** — GitHub Actions workflows, dependabot config (unless the task explicitly requires it)
+- **`.devcontainer/`** — Development container configuration (unless the task explicitly requires it)
+- **`.editorconfig`** — Code style rules (unless the task explicitly requires it)
+- **`Directory.Build.props`** — Shared build properties (unless the task explicitly requires it)
+- **`LICENSE`** — MIT license file
+- **`.gitignore` / `.gitattributes`** — Git configuration (unless adding new file types)
+- **Model files in user cache** — Never modify downloaded ONNX model files
+- **`.ai-team*/` directories** — Squad framework configuration (managed separately)
+
+### Protected Patterns
+- Do not remove or disable nullable reference type checks
+- Do not suppress warnings globally — address warnings at the source
+- Do not disable code style enforcement
+- Do not add `<AllowUnsafeBlocks>true</AllowUnsafeBlocks>` without explicit justification
+- Do not use reflection when compile-time alternatives exist
+
+## Code Examples
+
+### Preferred Patterns
+
+#### Service Registration
+```csharp
+// Good: Extension method pattern for DI registration
+public static class ServiceCollectionExtensions
+{
+    public static IServiceCollection AddLocalEmbeddings(
+        this IServiceCollection services,
+        Action<LocalEmbeddingsOptions>? configure = null)
+    {
+        services.AddOptions<LocalEmbeddingsOptions>();
+        if (configure != null)
+        {
+            services.Configure(configure);
+        }
+        services.AddSingleton<IEmbeddingGenerator<string, Embedding<float>>, OnnxEmbeddingModel>();
+        return services;
+    }
+}
+```
+
+#### Async Patterns
+```csharp
+// Good: Use ConfigureAwait(false) in library code to avoid deadlocks
+public async Task<GeneratedEmbeddings<Embedding<float>>> GenerateAsync(
+    IEnumerable<string> values,
+    EmbeddingGenerationOptions? options = null,
+    CancellationToken cancellationToken = default)
+{
+    // ConfigureAwait(false) prevents capturing the synchronization context
+    var session = await _sessionFactory.CreateAsync(cancellationToken).ConfigureAwait(false);
+    var embeddings = await session.RunAsync(values, cancellationToken).ConfigureAwait(false);
+    return new GeneratedEmbeddings<Embedding<float>>(embeddings);
+}
+```
+
+#### Null Handling
+```csharp
+// Good: Use null-coalescing and throw helpers
+public void ProcessText(string? text)
+{
+    ArgumentNullException.ThrowIfNull(text);
+    // Continue with non-null text
+}
+
+// Good: Use null-coalescing for optional parameters
+public void Configure(LocalEmbeddingsOptions? options = null)
+{
+    var modelPath = options?.ModelPath ?? DefaultModelPath;
+}
+```
+
+### Anti-Patterns to Avoid
+
+```csharp
+// Bad: Don't use var for built-in types
+var count = 5; // Bad
+int count = 5; // Good
+
+// Bad: Don't ignore cancellation tokens
+public async Task ProcessAsync() // Bad: no CancellationToken
+public async Task ProcessAsync(CancellationToken cancellationToken) // Good
+
+// Bad: Don't swallow exceptions
+try { /* */ } catch { } // Bad
+try { /* */ } catch (Exception ex) { _logger.LogError(ex, "Failed"); throw; } // Good
+
+// Bad: Don't use string concatenation for paths
+var path = directory + "/" + filename; // Bad
+var path = Path.Combine(directory, filename); // Good
+```
+
+## Security Guidelines
+
+### Required Practices
+- **Input Validation**: Always validate user input before processing
+- **Path Traversal**: Use `Path.GetFullPath()` and validate paths stay within expected directories
+- **Resource Limits**: Set reasonable limits for model sizes, text lengths, and batch sizes
+- **Dependency Security**: Keep dependencies up to date; check for known vulnerabilities
+- **No Hardcoded Secrets**: Never commit API keys, tokens, or credentials
+- **Safe Deserialization**: Be cautious with JSON deserialization from untrusted sources
+
+### Security Examples
+```csharp
+// Good: Validate file paths with proper directory traversal prevention
+public static string ValidateModelPath(string? path)
+{
+    // Input validation
+    if (string.IsNullOrWhiteSpace(path))
+    {
+        throw new ArgumentException("Model path cannot be null or empty", nameof(path));
+    }
+    
+    // Normalize paths to prevent traversal attacks
+    var fullPath = Path.GetFullPath(path);
+    var allowedDirectory = Path.GetFullPath(DefaultModelDirectory);
+    
+    // Use GetRelativePath to safely check if path is within allowed directory
+    var relativePath = Path.GetRelativePath(allowedDirectory, fullPath);
+    if (relativePath.StartsWith("..", StringComparison.Ordinal))
+    {
+        throw new ArgumentException("Model path must be within allowed directory", nameof(path));
+    }
+    
+    return fullPath;
+}
+
+// Good: Set resource limits
+public const int MaxTextLength = 512;
+public const int MaxBatchSize = 32;
+public const long MaxModelSizeBytes = 1024 * 1024 * 1024; // 1GB
+```
+
 ## Plans
 
 - All plans are saved in `docs/plans/`.
