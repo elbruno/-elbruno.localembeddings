@@ -1,30 +1,30 @@
 {
-    "name": "ElBruno.LocalEmbeddings (.NET 10)",
-    "image": "mcr.microsoft.com/devcontainers/dotnet:1-10.0",
-    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-    "remoteUser": "vscode",
-    "containerEnv": {
-        "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
-        "DOTNET_NOLOGO": "1",
-        "NUGET_PACKAGES": "/home/vscode/.nuget/packages",
-        "XDG_DATA_HOME": "/home/vscode/.local/share"
-    },
-    "mounts": [
-        "source=elbruno-localembeddings-nuget,target=/home/vscode/.nuget/packages,type=volume",
-        "source=elbruno-localembeddings-models,target=/home/vscode/.local/share/LocalEmbeddings/models,type=volume"
-    ],
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "ms-dotnettools.csdevkit",
-                "ms-dotnettools.csharp",
-                "EditorConfig.EditorConfig"
-            ],
-            "settings": {
-                "dotnet.defaultSolution": "ElBruno.LocalEmbeddings.slnx"
-            }
-        }
-    },
-    "postCreateCommand": "bash -lc 'if command -v sudo >/dev/null 2>&1; then sudo mkdir -p /home/vscode/.nuget /home/vscode/.nuget/packages /home/vscode/.nuget/NuGet /home/vscode/.local/share && sudo chown -R vscode:vscode /home/vscode/.nuget /home/vscode/.local/share; else mkdir -p /home/vscode/.nuget /home/vscode/.nuget/packages /home/vscode/.nuget/NuGet /home/vscode/.local/share && chown -R vscode:vscode /home/vscode/.nuget /home/vscode/.local/share; fi && dotnet restore'",
-    "postStartCommand": "bash -lc 'if command -v sudo >/dev/null 2>&1; then sudo mkdir -p /home/vscode/.nuget /home/vscode/.nuget/packages /home/vscode/.nuget/NuGet /home/vscode/.local/share && sudo chown -R vscode:vscode /home/vscode/.nuget /home/vscode/.local/share; else mkdir -p /home/vscode/.nuget /home/vscode/.nuget/packages /home/vscode/.nuget/NuGet /home/vscode/.local/share && chown -R vscode:vscode /home/vscode/.nuget /home/vscode/.local/share; fi'"
+  "name": "ElBruno.LocalEmbeddings (.NET 10)",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:1-10.0",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "DOTNET_CLI_TELEMETRY_OPTOUT": "1",
+    "DOTNET_NOLOGO": "1",
+    "NUGET_PACKAGES": "/home/vscode/.nuget/packages",
+    "XDG_DATA_HOME": "/home/vscode/.local/share"
+  },
+  "mounts": [
+    "source=elbruno-localembeddings-nuget,target=/home/vscode/.nuget/packages,type=volume",
+    "source=elbruno-localembeddings-models,target=/home/vscode/.local/share/LocalEmbeddings/models,type=volume"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.csharp",
+        "EditorConfig.EditorConfig"
+      ],
+      "settings": {
+        "dotnet.defaultSolution": "ElBruno.LocalEmbeddings.slnx"
+      }
+    }
+  },
+  "postCreateCommand": "bash -lc 'if command -v sudo >/dev/null 2>&1; then sudo mkdir -p /home/vscode/.nuget /home/vscode/.nuget/packages /home/vscode/.nuget/NuGet /home/vscode/.local/share && sudo chown -R vscode:vscode /home/vscode/.nuget /home/vscode/.local/share; else mkdir -p /home/vscode/.nuget /home/vscode/.nuget/packages /home/vscode/.nuget/NuGet /home/vscode/.local/share; fi && dotnet restore'",
+  "postStartCommand": "bash -lc 'if command -v sudo >/dev/null 2>&1; then sudo mkdir -p /home/vscode/.nuget /home/vscode/.nuget/packages /home/vscode/.nuget/NuGet /home/vscode/.local/share && sudo chown -R vscode:vscode /home/vscode/.nuget /home/vscode/.local/share; else mkdir -p /home/vscode/.nuget /home/vscode/.nuget/packages /home/vscode/.nuget/NuGet /home/vscode/.local/share; fi'"
 }

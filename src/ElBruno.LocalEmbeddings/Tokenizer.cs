@@ -41,12 +41,12 @@ public sealed class Tokenizer
     public int MaxLength => _maxLength;
 
     /// <summary>
-    /// Creates a new tokenizer from a tokenizer.json file.
+    /// Creates a new tokenizer from a vocab.txt file.
     /// </summary>
     /// <param name="tokenizerPath">Path to the vocab.txt file or model directory containing it.</param>
     /// <param name="maxLength">Maximum sequence length (default: 512).</param>
     /// <exception cref="ArgumentException">Thrown when the path is null or empty.</exception>
-    /// <exception cref="FileNotFoundException">Thrown when the tokenizer file is not found.</exception>
+    /// <exception cref="FileNotFoundException">Thrown when the vocab.txt file is not found.</exception>
     public Tokenizer(string tokenizerPath, int maxLength = 512)
     {
         if (string.IsNullOrWhiteSpace(tokenizerPath))
