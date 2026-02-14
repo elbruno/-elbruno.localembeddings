@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\ElBruno.LocalEmbeddings\ElBruno.LocalEmbeddings.csproj" />
+    <ProjectReference Include="..\..\src\ElBruno.LocalEmbeddings.VectorData\ElBruno.LocalEmbeddings.VectorData.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -235,6 +235,9 @@ public static class ServiceCollectionExtensions
 }
 ```
 
+See [samples/RagChat](../samples/RagChat) for a full sample using
+`AddLocalEmbeddingsWithInMemoryVectorStore(...)` + `AddVectorStoreCollection<TKey, TRecord>(...)`.
+
 ---
 
 ## ElBruno.LocalEmbeddings.KernelMemory

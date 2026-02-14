@@ -106,7 +106,7 @@ See the [samples README](samples/README.md) for prerequisites and run instructio
 |--------|--------------|
 | [HelloWorldAltModel](samples/HelloWorldAltModel) | Minimal hello world with `sentence-transformers/all-MiniLM-L12-v2` |
 | [ConsoleApp](samples/ConsoleApp) | All the basics: single/batch embeddings, similarity, semantic search, DI |
-| [RagChat](samples/RagChat) | Embedding-only semantic search Q&A (no LLM needed) |
+| [RagChat](samples/RagChat) | Embedding-only semantic search Q&A using shared VectorData `InMemoryVectorStore` (no LLM needed) |
 | [RagOllama](samples/RagOllama) | Full RAG with Ollama + phi4-mini + Kernel Memory |
 | [RagFoundryLocal](samples/RagFoundryLocal) | Full RAG with Foundry Local + phi4-mini |
 

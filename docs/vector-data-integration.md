@@ -45,6 +45,11 @@ var collection = provider.GetRequiredService<VectorStoreCollection<int, ProductR
 
 You can still use `AddLocalEmbeddingsWithVectorStore(...)` when you want to plug in an external provider.
 
+## Reference sample
+
+See [samples/RagChat](../samples/RagChat) for a complete console sample that uses
+`AddLocalEmbeddingsWithInMemoryVectorStore(...)` and `VectorStoreCollection<TKey, TRecord>` end-to-end.
+
 ## Record shape example
 
 ```csharp

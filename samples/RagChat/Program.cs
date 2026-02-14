@@ -1,8 +1,10 @@
+using ElBruno.LocalEmbeddings.VectorData.Extensions;
 using ElBruno.LocalEmbeddings.Extensions;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.VectorData;
 using RagChat.Data;
-using RagChat.VectorStore;
+using RagChat.Models;
 
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
@@ -24,16 +26,14 @@ Console.WriteLine("  → Configuring ServiceCollection with AddLocalEmbeddings()
 
 var services = new ServiceCollection();
 
-// Register LocalEmbeddings using the DI extension method
-services.AddLocalEmbeddings(options =>
+// Register LocalEmbeddings + shared InMemoryVectorStore implementation
+services.AddLocalEmbeddingsWithInMemoryVectorStore(options =>
 {
     options.ModelName = "sentence-transformers/all-MiniLM-L6-v2";
     options.MaxSequenceLength = 256;
     options.EnsureModelDownloaded = true;
-});
-
-// Register our vector store
-services.AddSingleton<InMemoryVectorStore>();
+})
+.AddVectorStoreCollection<string, Document>("faq");
 
 Console.WriteLine("  → Building service provider");
 using var serviceProvider = services.BuildServiceProvider();
@@ -65,9 +65,9 @@ if (embeddingGenerator is ElBruno.LocalEmbeddings.LocalEmbeddingGenerator localG
 }
 Console.WriteLine();
 
-Console.WriteLine("  → Creating InMemoryVectorStore instance");
-var vectorStore = serviceProvider.GetRequiredService<InMemoryVectorStore>();
-Console.WriteLine("  ✓ Vector store initialized");
+Console.WriteLine("  → Resolving VectorData collection (faq)");
+var faqCollection = serviceProvider.GetRequiredService<VectorStoreCollection<string, Document>>();
+Console.WriteLine("  ✓ Shared InMemoryVectorStore collection initialized");
 Console.WriteLine();
 
 // =============================================================================
@@ -98,13 +98,19 @@ Console.Write("    Progress: [");
 startTime = DateTime.Now;
 var totalDocs = documents.Count;
 var progressWidth = 40;
+var contents = documents.Select(d => d.Content).ToList();
+var embeddings = await embeddingGenerator.GenerateAsync(contents);
 
-await vectorStore.AddDocumentsAsync(documents, (current, total) =>
+for (var i = 0; i < totalDocs; i++)
 {
-    var progress = (int)((float)current / total * progressWidth);
+    documents[i].Vector = embeddings[i].Vector;
+    var current = i + 1;
+    var progress = (int)((float)current / totalDocs * progressWidth);
     Console.SetCursorPosition(15, Console.CursorTop);
-    Console.Write("[" + new string('█', progress) + new string('░', progressWidth - progress) + $"] {current}/{total}");
-});
+    Console.Write("[" + new string('█', progress) + new string('░', progressWidth - progress) + $"] {current}/{totalDocs}");
+}
+
+await faqCollection.UpsertAsync(documents);
 
 var embeddingTime = DateTime.Now - startTime;
 Console.WriteLine();
@@ -164,7 +170,12 @@ while (true)
 
     // Perform semantic search
     startTime = DateTime.Now;
-    var results = await vectorStore.SearchAsync(input, topK: 3, minScore: 0.2f);
+    var queryEmbedding = (await embeddingGenerator.GenerateAsync([input]))[0];
+    var rawResults = await ToListAsync(faqCollection.SearchAsync(queryEmbedding, top: 3));
+    var results = rawResults
+        .Where(r => (r.Score ?? 0d) >= 0.2d)
+        .OrderByDescending(r => r.Score ?? 0d)
+        .ToList();
     var searchTime = DateTime.Now - startTime;
 
     if (results.Count == 0)
@@ -183,27 +194,28 @@ while (true)
         for (int i = 0; i < results.Count; i++)
         {
             var result = results[i];
-            var similarityPercent = result.Score * 100;
-            var barLength = (int)(result.Score * 20);
+            var score = (float)(result.Score ?? 0d);
+            var similarityPercent = score * 100;
+            var barLength = (int)(score * 20);
             var bar = new string('█', barLength) + new string('░', 20 - barLength);
 
             // Color based on similarity score
-            Console.ForegroundColor = result.Score >= 0.5f ? ConsoleColor.Green :
-                                       result.Score >= 0.35f ? ConsoleColor.Yellow : ConsoleColor.DarkYellow;
+            Console.ForegroundColor = score >= 0.5f ? ConsoleColor.Green :
+                                       score >= 0.35f ? ConsoleColor.Yellow : ConsoleColor.DarkYellow;
             Console.Write($"  [{bar}] ");
             Console.ResetColor();
             Console.WriteLine($"{similarityPercent:F1}% match");
 
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine($"  📄 {result.Document.Title}");
+            Console.WriteLine($"  📄 {result.Record.Title}");
             Console.ResetColor();
 
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine($"     Category: {result.Document.Category}");
+            Console.WriteLine($"     Category: {result.Record.Category}");
             Console.ResetColor();
 
             // Wrap content for better display
-            var content = result.Document.Content;
+            var content = result.Record.Content;
             var maxWidth = 70;
             var lines = WrapText(content, maxWidth);
             foreach (var line in lines)
@@ -307,4 +319,15 @@ static List<string> WrapText(string text, int maxWidth)
         lines.Add(currentLine);
 
     return lines;
+}
+
+static async Task<List<T>> ToListAsync<T>(IAsyncEnumerable<T> source)
+{
+    var result = new List<T>();
+    await foreach (var item in source)
+    {
+        result.Add(item);
+    }
+
+    return result;
 }

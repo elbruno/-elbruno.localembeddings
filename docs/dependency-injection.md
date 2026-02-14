@@ -143,18 +143,18 @@ The companion package `ElBruno.LocalEmbeddings.VectorData` adds DI helpers for `
 dotnet add package ElBruno.LocalEmbeddings.VectorData
 ```
 
-### Register LocalEmbeddings + VectorStore
+### Register LocalEmbeddings + built-in InMemoryVectorStore
 
 ```csharp
 using ElBruno.LocalEmbeddings.VectorData.Extensions;
 
-services.AddLocalEmbeddingsWithVectorStore(
-    _ => CreateYourVectorStore(), // Replace with your concrete VectorStore provider factory
-    options =>
-    {
-        options.ModelName = "sentence-transformers/all-MiniLM-L6-v2";
-    });
+services.AddLocalEmbeddingsWithInMemoryVectorStore(options =>
+{
+    options.ModelName = "sentence-transformers/all-MiniLM-L6-v2";
+});
 ```
+
+For external providers, use `AddLocalEmbeddingsWithVectorStore(...)`.
 
 ### Register a typed collection
 
@@ -169,3 +169,5 @@ After registration, you can resolve:
 - `VectorStoreCollection<int, ProductRecord>`
 
 See [VectorData Integration](vector-data-integration.md) for full usage details.
+
+For a complete end-to-end sample using the shared in-memory store, see [samples/RagChat](../samples/RagChat).
