@@ -160,7 +160,7 @@ See [samples/BenchmarkSample/README.md](BenchmarkSample/README.md) for full deta
 
 A semantic search Q&A demo **without an LLM**. Embeds 20 FAQ documents about a fictional product, then lets you ask questions and see the most relevant answers ranked by similarity.
 
-Shows: shared `ElBruno.LocalEmbeddings.VectorData.InMemory` store via `AddLocalEmbeddingsWithInMemoryVectorStore(...)`, `IEmbeddingGenerator` via DI, batch embedding with progress, interactive search loop.
+Shows: shared `ElBruno.LocalEmbeddings.VectorData.InMemory` store via `AddLocalEmbeddingsWithInMemoryVectorStore(...)`, `IEmbeddingGenerator` via DI, batch embedding with progress, interactive search loop, and Spectre.Console-powered rendering with menu/formatting helpers extracted into dedicated files.
 
 ### Prerequisites
 
