@@ -11,11 +11,12 @@ A .NET library for generating text embeddings locally using ONNX Runtime and Mic
 - **Microsoft.Extensions.AI Integration** — Implements `IEmbeddingGenerator<string, Embedding<float>>`
 - **Kernel Memory Integration** — Companion package `ElBruno.LocalEmbeddings.KernelMemory` provides a native `ITextEmbeddingGenerator` adapter for [Microsoft Kernel Memory](https://github.com/microsoft/kernel-memory)
 - **VectorData Integration** — Companion package `ElBruno.LocalEmbeddings.VectorData` adds DI helpers for `Microsoft.Extensions.VectorData` (`VectorStore` and typed collections)
+- **Built-in In-Memory Vector Store** — `ElBruno.LocalEmbeddings.VectorData` includes `InMemoryVectorStore` (no Semantic Kernel connector dependency required)
 - **HuggingFace Model Support** — Use popular sentence transformer models from HuggingFace Hub
 - **Automatic Model Caching** — Models are downloaded once and cached locally
 - **Dependency Injection Support** — First-class `IServiceCollection` integration
 - **Single-String Convenience API** — `GenerateAsync("text")` and `GenerateEmbeddingAsync("text")` — no array wrapping needed
-- **Similarity Helpers** — Cosine similarity, all-pairs `Similarity(...)` matrix, and `FindClosest(...)` for semantic search
+- **Similarity Helpers** — Cosine similarity, all-pairs `Similarity(...)` matrix, and one-line `FindClosestAsync(...)` semantic search
 - **Thread-Safe & Batched** — Concurrent generation and efficient multi-text processing
 
 ## Installation
@@ -66,6 +67,28 @@ var score = pair[0].CosineSimilarity(pair[1]);
 Console.WriteLine(score);
 ```
 
+### 4) Semantic search in one line
+
+```csharp
+var corpus = new[]
+{
+    "Python for data science",
+    "JavaScript for web apps",
+    "Swift for iOS development"
+};
+
+var corpusEmbeddings = await generator.GenerateAsync(corpus);
+var results = await generator.FindClosestAsync(
+    "best language for websites",
+    corpus,
+    corpusEmbeddings,
+    topK: 2,
+    minScore: 0.2f);
+
+foreach (var result in results)
+    Console.WriteLine($"{result.Score:F3} - {result.Text}");
+```
+
 For custom models and runtime behavior, use the options-based constructor:
 `new LocalEmbeddingGenerator(new LocalEmbeddingsOptions { ... })`.
 
@@ -80,10 +103,10 @@ Prefer a containerized dev environment? See the Dev Container section in the [Co
 See the [samples README](samples/README.md) for prerequisites and run instructions.
 
 | Sample | What It Shows |
-|--------|--------------|
+| ------ | ------------- |
 | [HelloWorldAltModel](samples/HelloWorldAltModel) | Minimal hello world with `sentence-transformers/all-MiniLM-L12-v2` |
 | [ConsoleApp](samples/ConsoleApp) | All the basics: single/batch embeddings, similarity, semantic search, DI |
-| [RagChat](samples/RagChat) | Embedding-only semantic search Q&A (no LLM needed) |
+| [RagChat](samples/RagChat) | Embedding-only semantic search Q&A using shared VectorData `InMemoryVectorStore` (no LLM needed) |
 | [RagOllama](samples/RagOllama) | Full RAG with Ollama + phi4-mini + Kernel Memory |
 | [RagFoundryLocal](samples/RagFoundryLocal) | Full RAG with Foundry Local + phi4-mini |
 
@@ -102,10 +125,20 @@ var options = new LocalEmbeddingsOptions
 
 See [Configuration docs](docs/configuration.md) for supported models, local model paths, and cache locations.
 
+### Common model options (with model cards)
+
+Estimated download sizes below are approximate and can vary by ONNX variant (fp32/int8) and tokenizer assets.
+
+- [`sentence-transformers/all-MiniLM-L6-v2` (default, ~90–100 MB)](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)
+- [`sentence-transformers/all-MiniLM-L12-v2` (~130–140 MB)](https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2)
+- [`sentence-transformers/paraphrase-MiniLM-L6-v2` (~90–100 MB)](https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2)
+- [`BAAI/bge-large-en-v1.5` (large, ~1.3 GB)](https://huggingface.co/BAAI/bge-large-en-v1.5)
+- [`intfloat/e5-large-v2` (large, ~1.3 GB)](https://huggingface.co/intfloat/e5-large-v2)
+
 ## Documentation
 
 | Topic | Description |
-|-------|-------------|
+| ----- | ----------- |
 | [Getting Started](docs/getting-started.md) | Step-by-step guide from hello world to RAG |
 | [API Reference](docs/api-reference.md) | Classes, methods, and extension methods |
 | [Configuration](docs/configuration.md) | Options, supported models, cache locations |

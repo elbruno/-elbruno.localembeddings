@@ -1,4 +1,4 @@
-using RagChat.VectorStore;
+using RagChat.Models;
 
 namespace RagChat.Data;
 

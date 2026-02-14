@@ -10,6 +10,8 @@ This guide covers how to publish new versions of **ElBruno.LocalEmbeddings**, **
 | `ElBruno.LocalEmbeddings.KernelMemory` | `src/ElBruno.LocalEmbeddings.KernelMemory/` | Companion — Kernel Memory adapter + extensions |
 | `ElBruno.LocalEmbeddings.VectorData` | `src/ElBruno.LocalEmbeddings.VectorData/` | Companion — Microsoft.Extensions.VectorData integration |
 
+> **Maintenance rule:** If a new packable library is added under `src/`, update `.github/workflows/publish.yml` in the same PR so the new project is packed/pushed, and add a matching NuGet Trusted Publishing policy.
+
 ## Prerequisites (One-Time Setup)
 
 These steps only need to be done once.

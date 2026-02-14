@@ -1,4 +1,5 @@
 using ElBruno.LocalEmbeddings.Options;
+using ElBruno.LocalEmbeddings.VectorData.InMemory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -11,6 +12,62 @@ namespace ElBruno.LocalEmbeddings.VectorData.Extensions;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds LocalEmbeddings and the built-in <see cref="InMemoryVectorStore"/> implementation.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configure">An optional action to configure LocalEmbeddings options.</param>
+    /// <returns>The service collection for chaining.</returns>
+    public static IServiceCollection AddLocalEmbeddingsWithInMemoryVectorStore(
+        this IServiceCollection services,
+        Action<LocalEmbeddingsOptions>? configure = null)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+
+        ElBruno.LocalEmbeddings.Extensions.ServiceCollectionExtensions.AddLocalEmbeddings(services, configure);
+        services.TryAddSingleton<VectorStore, InMemoryVectorStore>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds LocalEmbeddings and the built-in <see cref="InMemoryVectorStore"/> implementation.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="options">The pre-configured LocalEmbeddings options.</param>
+    /// <returns>The service collection for chaining.</returns>
+    public static IServiceCollection AddLocalEmbeddingsWithInMemoryVectorStore(
+        this IServiceCollection services,
+        LocalEmbeddingsOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(options);
+
+        ElBruno.LocalEmbeddings.Extensions.ServiceCollectionExtensions.AddLocalEmbeddings(services, options);
+        services.TryAddSingleton<VectorStore, InMemoryVectorStore>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds LocalEmbeddings and the built-in <see cref="InMemoryVectorStore"/> implementation.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="configuration">The configuration section to bind LocalEmbeddings options from.</param>
+    /// <returns>The service collection for chaining.</returns>
+    public static IServiceCollection AddLocalEmbeddingsWithInMemoryVectorStore(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(configuration);
+
+        ElBruno.LocalEmbeddings.Extensions.ServiceCollectionExtensions.AddLocalEmbeddings(services, configuration);
+        services.TryAddSingleton<VectorStore, InMemoryVectorStore>();
+
+        return services;
+    }
+
     /// <summary>
     /// Adds LocalEmbeddings and a <see cref="VectorStore"/> to the service collection.
     /// </summary>

@@ -1,4 +1,5 @@
 using ElBruno.LocalEmbeddings.VectorData.Extensions;
+using ElBruno.LocalEmbeddings.VectorData.InMemory;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.VectorData;
@@ -37,6 +38,19 @@ public class ServiceCollectionExtensionsTests
 
         Assert.Throws<ArgumentNullException>(() =>
             services.AddLocalEmbeddingsWithVectorStore(null!));
+    }
+
+    [Fact]
+    public void AddLocalEmbeddingsWithInMemoryVectorStore_RegistersVectorStore()
+    {
+        var services = new ServiceCollection();
+
+        services.AddLocalEmbeddingsWithInMemoryVectorStore();
+
+        using var provider = services.BuildServiceProvider();
+        var vectorStore = provider.GetRequiredService<VectorStore>();
+
+        Assert.IsType<InMemoryVectorStore>(vectorStore);
     }
 
     [Fact]

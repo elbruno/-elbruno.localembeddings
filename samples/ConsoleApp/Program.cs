@@ -198,27 +198,20 @@ foreach (var query in queries)
     Console.WriteLine($"Query: \"{query}\"");
     Console.WriteLine();
 
-    // Single-string GenerateEmbeddingAsync — returns the embedding directly
-    var queryEmbedding = await generator.GenerateEmbeddingAsync(query);
-
-    // Calculate similarity with all documents
-    var results = knowledgeBase
-        .Select((doc, idx) => new
-        {
-            Document = doc,
-            Similarity = queryEmbedding.CosineSimilarity(kbEmbeddings[idx])
-        })
-        .OrderByDescending(r => r.Similarity)
-        .Take(3)
-        .ToList();
+    var results = await generator.FindClosestAsync(
+        query,
+        knowledgeBase,
+        kbEmbeddings,
+        topK: 3,
+        minScore: 0.2f);
 
     Console.WriteLine("  Top 3 Results:");
     for (var i = 0; i < results.Count; i++)
     {
-        var bar = new string('█', (int)(results[i].Similarity * 15));
-        var empty = new string('░', 15 - (int)(results[i].Similarity * 15));
-        Console.WriteLine($"    {i + 1}. [{bar}{empty}] {results[i].Similarity:P1}");
-        Console.WriteLine($"       {results[i].Document}");
+        var bar = new string('█', (int)(results[i].Score * 15));
+        var empty = new string('░', 15 - (int)(results[i].Score * 15));
+        Console.WriteLine($"    {i + 1}. [{bar}{empty}] {results[i].Score:P1}");
+        Console.WriteLine($"       {results[i].Text}");
     }
     Console.WriteLine();
 }

@@ -150,4 +150,53 @@ public static class EmbeddingExtensions
             .Take(topK)
             .ToList();
     }
+
+    /// <summary>
+    /// Finds the closest embeddings to the query embedding using cosine similarity.
+    /// </summary>
+    /// <param name="queryEmbedding">The query embedding.</param>
+    /// <param name="corpusEmbeddings">The corpus embeddings to compare against.</param>
+    /// <param name="topK">The maximum number of results to return. Must be greater than zero.</param>
+    /// <param name="minScore">Optional minimum cosine similarity threshold.</param>
+    /// <returns>
+    /// A list of (Index, Score) tuples ordered by descending score and then by ascending index.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="queryEmbedding"/> or <paramref name="corpusEmbeddings"/> is null.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="topK"/> is less than 1.</exception>
+    /// <remarks>
+    /// This operation performs a linear scan over the corpus, with time complexity O(n).
+    /// </remarks>
+    public static List<(int Index, float Score)> FindClosest(
+        this Embedding<float> queryEmbedding,
+        IReadOnlyList<Embedding<float>> corpusEmbeddings,
+        int topK = 3,
+        float? minScore = null)
+    {
+        ArgumentNullException.ThrowIfNull(queryEmbedding);
+        ArgumentNullException.ThrowIfNull(corpusEmbeddings);
+
+        if (topK < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(topK), topK, "topK must be greater than zero.");
+        }
+
+        if (corpusEmbeddings.Count == 0)
+        {
+            return [];
+        }
+
+        var results = corpusEmbeddings
+            .Select((embedding, index) => (Index: index, Score: queryEmbedding.CosineSimilarity(embedding)));
+
+        if (minScore is not null)
+        {
+            results = results.Where(result => result.Score >= minScore.Value);
+        }
+
+        return results
+            .OrderByDescending(result => result.Score)
+            .ThenBy(result => result.Index)
+            .Take(topK)
+            .ToList();
+    }
 }

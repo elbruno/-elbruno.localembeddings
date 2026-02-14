@@ -1,6 +1,6 @@
 # VectorData Integration — ElBruno.LocalEmbeddings
 
-Use the companion package `ElBruno.LocalEmbeddings.VectorData` to combine local embedding generation with `Microsoft.Extensions.VectorData` abstractions.
+Use the companion package `ElBruno.LocalEmbeddings.VectorData` to combine local embedding generation with `Microsoft.Extensions.VectorData` abstractions, including a built-in dependency-light `InMemoryVectorStore`.
 
 ## Install
 
@@ -17,8 +17,7 @@ using Microsoft.Extensions.VectorData;
 
 var services = new ServiceCollection();
 
-services.AddLocalEmbeddingsWithVectorStore(
-    _ => CreateYourVectorStore(), // Replace with your concrete VectorStore provider factory
+services.AddLocalEmbeddingsWithInMemoryVectorStore(
     options =>
     {
         options.ModelName = "sentence-transformers/all-MiniLM-L6-v2";
@@ -29,7 +28,7 @@ services.AddLocalEmbeddingsWithVectorStore(
 After registration, DI exposes:
 
 - `IEmbeddingGenerator<string, Embedding<float>>` (from `ElBruno.LocalEmbeddings`)
-- `VectorStore` (from your provider factory)
+- `VectorStore` (built-in `InMemoryVectorStore`)
 
 ## Register a typed collection
 
@@ -43,6 +42,13 @@ Then resolve and use it:
 var provider = services.BuildServiceProvider();
 var collection = provider.GetRequiredService<VectorStoreCollection<int, ProductRecord>>();
 ```
+
+You can still use `AddLocalEmbeddingsWithVectorStore(...)` when you want to plug in an external provider.
+
+## Reference sample
+
+See [samples/RagChat](../samples/RagChat) for a complete console sample that uses
+`AddLocalEmbeddingsWithInMemoryVectorStore(...)` and `VectorStoreCollection<TKey, TRecord>` end-to-end.
 
 ## Record shape example
 
