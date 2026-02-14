@@ -167,7 +167,7 @@ using ElBruno.LocalEmbeddings.VectorData.Extensions;
 using Microsoft.Extensions.VectorData;
 
 services.AddLocalEmbeddingsWithVectorStore(
-    _ => CreateYourVectorStore(),
+    _ => CreateYourVectorStore(), // Replace with your concrete VectorStore provider factory
     options => options.ModelName = "sentence-transformers/all-MiniLM-L6-v2")
     .AddVectorStoreCollection<int, ProductRecord>("products");
 ```

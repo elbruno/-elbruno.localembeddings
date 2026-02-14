@@ -21,6 +21,13 @@ The simplest way to use local embeddings with Kernel Memory:
 ```csharp
 using ElBruno.LocalEmbeddings.KernelMemory.Extensions;
 using Microsoft.KernelMemory;
+using Microsoft.KernelMemory.AI.Ollama;
+
+var config = new OllamaConfig
+{
+    Endpoint = "http://localhost:11434",
+    TextModel = new OllamaModelConfig("phi4-mini")
+};
 
 var memory = new KernelMemoryBuilder()
     .WithLocalEmbeddings()          // <-- one line!
@@ -34,6 +41,8 @@ await memory.ImportTextAsync("Bruno's favourite super hero is Invincible", "doc1
 var answer = await memory.AskAsync("What is Bruno's favourite super hero?");
 Console.WriteLine(answer.Result);
 ```
+
+> **Tip:** If you only need retrieval/search (no answer generation), use `WithLocalEmbeddingsSearchOnly()` instead.
 
 ## Builder Overloads
 
@@ -171,6 +180,13 @@ If you previously used `WithCustomEmbeddingGenerator<T>()` directly:
 using ElBruno.LocalEmbeddings;
 using Microsoft.Extensions.AI;
 using Microsoft.KernelMemory;
+using Microsoft.KernelMemory.AI.Ollama;
+
+var config = new OllamaConfig
+{
+    Endpoint = "http://localhost:11434",
+    TextModel = new OllamaModelConfig("phi4-mini")
+};
 
 using var generator = new LocalEmbeddingGenerator();
 
@@ -185,6 +201,13 @@ var memory = new KernelMemoryBuilder()
 ```csharp
 using ElBruno.LocalEmbeddings.KernelMemory.Extensions;
 using Microsoft.KernelMemory;
+using Microsoft.KernelMemory.AI.Ollama;
+
+var config = new OllamaConfig
+{
+    Endpoint = "http://localhost:11434",
+    TextModel = new OllamaModelConfig("phi4-mini")
+};
 
 var memory = new KernelMemoryBuilder()
     .WithOllamaTextGeneration(config)

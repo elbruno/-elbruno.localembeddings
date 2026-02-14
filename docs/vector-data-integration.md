@@ -18,7 +18,7 @@ using Microsoft.Extensions.VectorData;
 var services = new ServiceCollection();
 
 services.AddLocalEmbeddingsWithVectorStore(
-    _ => CreateYourVectorStore(), // e.g. your provider implementation
+    _ => CreateYourVectorStore(), // Replace with your concrete VectorStore provider factory
     options =>
     {
         options.ModelName = "sentence-transformers/all-MiniLM-L6-v2";
@@ -40,6 +40,7 @@ services.AddVectorStoreCollection<int, ProductRecord>("products");
 Then resolve and use it:
 
 ```csharp
+var provider = services.BuildServiceProvider();
 var collection = provider.GetRequiredService<VectorStoreCollection<int, ProductRecord>>();
 ```
 
