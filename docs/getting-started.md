@@ -232,3 +232,14 @@ await foreach (var chunk in chatClient.GetStreamingResponseAsync(prompt))
 - **[Kernel Memory Integration](kernel-memory-integration.md)** — Use local embeddings with Microsoft Kernel Memory for semantic memory / RAG
 - **[VectorData Integration](vector-data-integration.md)** — Use local embeddings with Microsoft.Extensions.VectorData abstractions
 - **[Samples README](../samples/README.md)** — All sample projects with prerequisites and run instructions
+
+---
+
+### Want Deeper Insights? 📚
+
+Dive into embeddings and local AI on multiple platforms:
+
+- 📖 **Check the [blog at elbruno.com](https://elbruno.com)** for detailed posts on RAG patterns, model selection, and production tips
+- 🎙️ **Listen to [No Tienen Nombre podcast](https://notienenombre.com)** (Spanish) for conversations about AI and development culture
+- 📹 **Watch tutorials on [YouTube](https://www.youtube.com/elbruno)** for live demos and end-to-end walkthroughs
+- 🔔 **Follow [@elbruno on Twitter/X](https://www.x.com/in/elbruno/)** for quick tips and releases

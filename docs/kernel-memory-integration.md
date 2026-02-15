@@ -252,3 +252,13 @@ Console.WriteLine(answer.Result);
 - [Dependency Injection](dependency-injection.md) — All DI overloads including KM integration
 - [Configuration](configuration.md) — Supported models, cache locations, options
 - [Getting Started](getting-started.md) — Step-by-step guide from hello world to RAG
+
+---
+
+### Want to Learn More? 🚀
+
+For deeper insights into RAG patterns, Kernel Memory workflows, and production deployment:
+
+- 📖 **Visit [ElBruno.com](https://elbruno.com)** for detailed guides and best practices
+- 🎬 **Check [YouTube](https://www.youtube.com/elbruno)** for RAG walkthroughs and live coding sessions
+- 💬 **Follow [@elbruno on X](https://www.x.com/in/elbruno/)** for hot takes on embeddings and KM updates

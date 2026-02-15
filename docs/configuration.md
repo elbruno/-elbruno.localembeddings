@@ -86,6 +86,8 @@ var options = new LocalEmbeddingsOptions
 };
 ```
 
+Need guidance on choosing models for your use case? See [Alternative Models](alternative-models.md) or check out detailed comparisons on [ElBruno.com](https://elbruno.com).
+
 ## Cache Locations
 
 - **Windows**: `%LOCALAPPDATA%\LocalEmbeddings\models`

@@ -402,4 +402,15 @@ public static class ServiceCollectionExtensions
         where TKey : notnull
         where TRecord : class;
 }
+
+---
+
+## More Resources 📚
+
+- 🎓 **[Getting Started Guide](getting-started.md)** — Step-by-step from hello world to RAG
+- ⚙️ **[Configuration](configuration.md)** — All options and supported models
+- 🔗 **[Dependency Injection](dependency-injection.md)** — All DI overloads
+- 📖 **[ElBruno.Com Blog](https://elbruno.com)** — Deep dives into embeddings and AI patterns
+- 🎥 **[YouTube Channel](https://www.youtube.com/elbruno)** — Live demos and tutorials
+- 🎙️ **[No Tienen Nombre Podcast](https://notienenombre.com)** — Conversations about AI and .NET (Spanish)
 ```

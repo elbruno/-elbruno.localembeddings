@@ -78,6 +78,15 @@ dotnet test
 - The core `ElBruno.LocalEmbeddings` package must **not** depend on Kernel Memory — KM integration lives in the companion package.
 - Target .NET 10.0 or later.
 
+## Get Involved & Stay Connected
+
+Have ideas? Found a bug? Want to contribute?
+
+- **Open an [issue](https://github.com/elbruno/elbruno.localembeddings/issues)** with your suggestion or bug report
+- **Submit a [PR](https://github.com/elbruno/elbruno.localembeddings/pulls)** — all contributions welcome!
+- **Share your projects** — Get in touch via [LinkedIn](https://www.linkedin.com/in/elbruno/) or [@elbruno on X](https://www.x.com/in/elbruno/)
+- **Listen & subscribe** on [No Tienen Nombre podcast](https://notienenombre.com) for ongoing conversations about .NET, AI, and the developer community
+
 ## License
 
 This project is licensed under the MIT License — see the [LICENSE](../LICENSE) file for details.

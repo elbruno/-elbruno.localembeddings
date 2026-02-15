@@ -10,7 +10,7 @@ This is useful for offline or controlled environments where you want to manage m
 
 - Model used in this scenario: `sentence-transformers/paraphrase-MiniLM-L6-v2`
 - License: Apache-2.0
-- Model card: https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2
+- Model card: <https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2>
 
 ### 2) Download model files to a local folder
 
@@ -60,7 +60,17 @@ The app creates `LocalEmbeddingGenerator` with the model above, generates one em
 
 | Model | License | Source |
 |-------|---------|--------|
-| `sentence-transformers/paraphrase-MiniLM-L6-v2` | Apache-2.0 | https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2 |
-| `sentence-transformers/all-MiniLM-L12-v2` | Apache-2.0 | https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2 |
+| `sentence-transformers/paraphrase-MiniLM-L6-v2` | Apache-2.0 | <https://huggingface.co/sentence-transformers/paraphrase-MiniLM-L6-v2> |
+| `sentence-transformers/all-MiniLM-L12-v2` | Apache-2.0 | <https://huggingface.co/sentence-transformers/all-MiniLM-L12-v2> |
 
 Always verify the model card license before shipping to production, because model licenses can change independently from this library.
+
+---
+
+## Choosing the Right Model? 🤔
+
+Check the [Configuration Guide](configuration.md) for a full comparison of supported models and their trade-offs. Want expert insights on model selection for your use case?
+
+- 📖 **[ElBruno.Com Blog](https://elbruno.com)** — Deep comparisons and performance analysis
+- 🎥 **[YouTube](https://www.youtube.com/elbruno)** — Model selection strategies and benchmarks
+- 🔗 Connect on **[LinkedIn](https://www.linkedin.com/in/elbruno/)** or **[Twitter/X](https://www.x.com/in/elbruno/)** for specific questions
