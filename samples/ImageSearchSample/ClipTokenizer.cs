@@ -8,7 +8,6 @@ namespace ImageSearchSample;
 public sealed class ClipTokenizer
 {
     private readonly Dictionary<string, int> _vocabulary;
-    private readonly List<(string, string)> _mergeRules;
     private const int SOT = 49406;  // Start of text token
     private const int EOT = 49407;  // End of text token
     private const int ContextLength = 77;
@@ -20,23 +19,21 @@ public sealed class ClipTokenizer
         _vocabulary = JsonSerializer.Deserialize<Dictionary<string, int>>(json) 
             ?? throw new Exception("Failed to parse vocabulary");
 
-        // Load merge rules
-        _mergeRules = new List<(string, string)>();
-        var lines = File.ReadAllLines(mergesTxtPath);
-        for (int i = 1; i < lines.Length; i++) // Skip header
+        // Note: merges.txt is required by CLIP but not used in this simplified implementation
+        // A full BPE tokenizer would use merge rules for subword tokenization
+        if (!File.Exists(mergesTxtPath))
         {
-            var parts = lines[i].Split(' ', StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length >= 2)
-            {
-                _mergeRules.Add((parts[0], parts[1]));
-            }
+            throw new FileNotFoundException($"Merge rules file not found: {mergesTxtPath}");
         }
     }
 
     public (int[] InputIds, int[] AttentionMask) Encode(string text)
     {
-        // For now, use a simplified approach: split on whitespace and look up tokens
-        // This is a minimal implementation - a full BPE tokenizer is complex
+        // This is a simplified tokenizer implementation for demonstration purposes.
+        // Note: CLIP's BPE vocabulary is case-sensitive. This implementation converts to lowercase
+        // which may reduce search quality for proper nouns and capitalized words.
+        // For production use, consider using a full BPE tokenizer implementation.
+        
         var tokens = new List<int> { SOT };
 
         // Simple whitespace tokenization + vocab lookup

@@ -76,11 +76,19 @@ public sealed class ImageSearchEngine
 
     /// <summary>
     /// Computes cosine similarity between two normalized vectors (dot product).
+    /// Both vectors must have the same length (CLIP uses 512 dimensions).
     /// </summary>
     private static float CosineSimilarity(float[] a, float[] b)
     {
+        if (a.Length != b.Length)
+        {
+            throw new ArgumentException(
+                $"Vector dimensions must match. Got {a.Length} and {b.Length}. " +
+                "CLIP embeddings should be 512-dimensional.");
+        }
+
         float dotProduct = 0f;
-        for (int i = 0; i < a.Length && i < b.Length; i++)
+        for (int i = 0; i < a.Length; i++)
         {
             dotProduct += a[i] * b[i];
         }
