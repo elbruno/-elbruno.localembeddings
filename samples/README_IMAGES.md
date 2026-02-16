@@ -16,7 +16,6 @@ The `ElBruno.LocalEmbeddings.ImageEmbeddings` library brings multimodal capabili
 | :--- | :--- | :--- |
 | **[ImageRagSimple](ImageRagSimple/Program.cs)** | Minimal Console App | Basic indexing and search loop. Good start for understanding the API. |
 | **[ImageRagChat](ImageRagChat/Program.cs)** | Interactive CLI | Rich UI using Spectre.Console. Supports text and image queries. |
-| **[ImageSearchSample](ImageSearchSample/Program.cs)** | Legacy / Standalone | Detailed look at the internal tokenizer/encoder logic (useful for learning). |
 
 ---
 
@@ -96,10 +95,6 @@ dotnet run --project samples/ImageRagSimple -- --model-dir ./scripts/clip-models
 dotnet run --project samples/ImageRagChat -- --model-dir ./scripts/clip-models --image-dir ./samples/images
 ```
 
-```bash
-dotnet run --project samples/ImageSearchSample -- --model-dir ./scripts/clip-models --image-dir ./samples/images
-```
-
 ### Running ImageRagSimple
 
 A bare-bones example that indexes images and runs a few hardcoded queries ("a cat", "sunset").
@@ -121,12 +116,6 @@ dotnet run --project samples/ImageRagChat -- --model-dir ./scripts/clip-models -
 * Type any text to search (e.g., "fast car")
 * Type `image: path/to/image.jpg` to find similar images
 * Type `exit` to quit
-
-### Running ImageSearchSample
-
-```bash
-dotnet run --project samples/ImageSearchSample -- --model-dir ./scripts/clip-models --image-dir ./samples/images
-```
 
 ---
 

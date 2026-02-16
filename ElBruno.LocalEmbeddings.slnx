@@ -6,7 +6,6 @@
     <Project Path="samples/HelloWorldAltModel/HelloWorldAltModel.csproj" />
     <Project Path="samples/ImageRagChat/ImageRagChat.csproj" />
     <Project Path="samples/ImageRagSimple/ImageRagSimple.csproj" />
-    <Project Path="samples/ImageSearchSample/ImageSearchSample.csproj" />
     <Project Path="samples/RaspberryPiTiny/RaspberryPiTiny.csproj" />
     <Project Path="samples/RagChat/RagChat.csproj" />
     <Project Path="samples/RagFoundryLocal/RagFoundryLocal.csproj" />
