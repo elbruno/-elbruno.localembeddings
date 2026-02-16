@@ -111,7 +111,7 @@ secrets.json
 # ~/.local/share/LocalEmbeddings/
 
 # CLIP model files (large ONNX models, download separately)
-samples/ImageSearchSample/clip-models/
+scripts/clip-models/
 
 # BenchmarkDotNet
 BenchmarkDotNet.Artifacts/
