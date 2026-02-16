@@ -92,4 +92,14 @@ public class ImageSearchEngineTests
             Directory.Delete(tempDir, recursive: true);
         }
     }
+
+    [Fact]
+    public void GetProgressFileName_ReturnsFileNameOnly()
+    {
+        var imagePath = Path.Combine("C:", "images", "sample-image.png");
+
+        var fileName = ImageSearchEngine.GetProgressFileName(imagePath);
+
+        Assert.Equal("sample-image.png", fileName);
+    }
 }

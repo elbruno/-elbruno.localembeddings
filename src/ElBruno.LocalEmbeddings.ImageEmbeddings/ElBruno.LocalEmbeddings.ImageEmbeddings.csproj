@@ -35,4 +35,10 @@
     <None Include="..\..\nuget_images\icon_03.png" Pack="true" PackagePath="\" Link="icon_03.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>ElBruno.LocalEmbeddings.ImageEmbeddings.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
 </Project>

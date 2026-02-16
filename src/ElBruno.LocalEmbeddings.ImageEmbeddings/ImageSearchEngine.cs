@@ -38,9 +38,9 @@ public sealed class ImageSearchEngine
     /// Indexes all images in the specified directory.
     /// </summary>
     /// <param name="imageDirectory">Path to the directory containing images to index.</param>
-    /// <param name="progress">Optional progress callback receiving (current, total) counts.</param>
+    /// <param name="progress">Optional progress callback receiving (current, total, fileName).</param>
     /// <exception cref="DirectoryNotFoundException">Thrown when the image directory does not exist.</exception>
-    public void IndexImages(string imageDirectory, Action<int, int>? progress = null)
+    public void IndexImages(string imageDirectory, Action<int, int, string>? progress = null)
     {
         if (!Directory.Exists(imageDirectory))
         {
@@ -57,7 +57,8 @@ public sealed class ImageSearchEngine
             var imagePath = imageFiles[i];
             var embedding = _imageEncoder.Encode(imagePath);
             _imageIndex.Add((imagePath, embedding));
-            progress?.Invoke(i + 1, imageFiles.Count);
+            var fileName = GetProgressFileName(imagePath);
+            progress?.Invoke(i + 1, imageFiles.Count, fileName);
         }
     }
 
@@ -127,4 +128,6 @@ public sealed class ImageSearchEngine
             .Take(topK)
             .ToList();
     }
+
+    internal static string GetProgressFileName(string imagePath) => Path.GetFileName(imagePath);
 }

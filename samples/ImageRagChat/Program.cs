@@ -88,17 +88,9 @@ try
 
     startTime = DateTime.Now;
 
-    string[] extensions = [".jpg", ".jpeg", ".png", ".bmp", ".gif"];
-    var imageFiles = Directory.GetFiles(imageDir)
-        .Where(f => extensions.Contains(Path.GetExtension(f).ToLowerInvariant()))
-        .ToList();
-
-    searchEngine.IndexImages(imageDir, (current, total) =>
+    searchEngine.IndexImages(imageDir, (current, total, fileName) =>
     {
-        if (current <= imageFiles.Count)
-        {
-            ImageRagChatConsoleRenderer.PrintIndexingProgress(current, total, Path.GetFileName(imageFiles[current - 1]));
-        }
+        ImageRagChatConsoleRenderer.PrintIndexingProgress(current, total, fileName);
     });
     var indexTime = DateTime.Now - startTime;
 

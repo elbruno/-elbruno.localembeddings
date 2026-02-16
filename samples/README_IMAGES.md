@@ -85,22 +85,14 @@ All samples require two arguments:
 1. Path to the **model directory** (e.g., `./scripts/clip-models`)
 2. Path to the **image directory** (e.g., `./samples/images`)
 
-If you ran one of the download scripts (default location) and want to use the sample images, you can use these command line commands directly:
-
-```bash
-dotnet run --project samples/ImageRagSimple -- --model-dir ./scripts/clip-models --image-dir ./samples/images
-```
-
-```bash
-dotnet run --project samples/ImageRagChat -- --model-dir ./scripts/clip-models --image-dir ./samples/images
-```
+If you ran one of the download scripts (default location) and want to use the sample images, you can use these command line commands directly as shown below.
 
 ### Running ImageRagSimple
 
 A bare-bones example that indexes images and runs a few hardcoded queries ("a cat", "sunset").
 
 ```bash
-dotnet run --project samples/ImageRagSimple -- --model-dir ./scripts/clip-models --image-dir ./samples/images
+dotnet run --project samples/ImageRagSimple -- ./scripts/clip-models ./samples/images
 ```
 
 ### Running ImageRagChat
