@@ -134,7 +134,9 @@ class Program
         imageDir = string.Empty;
 
         if (TryGetOptionValue(args, "--model-dir", "-m", out string? modelValue) &&
-            TryGetOptionValue(args, "--image-dir", "-i", out string? imageValue))
+            TryGetOptionValue(args, "--image-dir", "-i", out string? imageValue) &&
+            !string.IsNullOrWhiteSpace(modelValue) &&
+            !string.IsNullOrWhiteSpace(imageValue))
         {
             modelDir = modelValue;
             imageDir = imageValue;

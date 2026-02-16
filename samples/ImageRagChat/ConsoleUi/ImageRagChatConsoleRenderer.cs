@@ -94,6 +94,7 @@ internal static class ImageRagChatConsoleRenderer
 
     public static void PrintIndexingProgress(int current, int total, string fileName)
     {
-        AnsiConsole.MarkupLine($"  [grey][{current}/{total}][/] Indexed: [cyan]{Markup.Escape(fileName)}[/]");
+        string progress = Markup.Escape($"[{current}/{total}]");
+        AnsiConsole.MarkupLine($"  [grey]{progress}[/] Indexed: [cyan]{Markup.Escape(fileName)}[/]");
     }
 }
