@@ -32,7 +32,7 @@ Unlike the text-only models, the CLIP models consist of multiple large files tha
 ./scripts/download_clip_models.ps1
 ```
 
-* Downloads models to `./clip-models` in the repository root.
+* Downloads models to `./scripts/clip-models`.
 
 **Linux / macOS (Bash)**
 
@@ -41,7 +41,7 @@ chmod +x scripts/download_clip_models.sh
 ./scripts/download_clip_models.sh
 ```
 
-* Downloads models to `./clip-models`.
+* Downloads models to `./scripts/clip-models`.
 
 ### Option B: Automatic Download (Library Feature)
 
@@ -83,15 +83,21 @@ You can point any of the samples to this directory to index and search them.
 
 All samples require two arguments:
 
-1. Path to the **model directory** (e.g., `./clip-models`)
+1. Path to the **model directory** (e.g., `./scripts/clip-models`)
 2. Path to the **image directory** (e.g., `./samples/images`)
+
+If you ran one of the download scripts, you can use this command line command directly:
+
+```bash
+dotnet run --project samples/ImageRagSimple -- ./scripts/clip-models ./samples/images
+```
 
 ### Running ImageRagSimple
 
 A bare-bones example that indexes images and runs a few hardcoded queries ("a cat", "sunset").
 
 ```bash
-dotnet run --project samples/ImageRagSimple -- ./clip-models ./samples/images
+dotnet run --project samples/ImageRagSimple -- ./scripts/clip-models ./samples/images
 ```
 
 ### Running ImageRagChat
@@ -99,7 +105,7 @@ dotnet run --project samples/ImageRagSimple -- ./clip-models ./samples/images
 An interactive chat application. Type queries to search your images in real-time.
 
 ```bash
-dotnet run --project samples/ImageRagChat -- ./clip-models ./samples/images
+dotnet run --project samples/ImageRagChat -- ./scripts/clip-models ./samples/images
 ```
 
 **Commands:**
@@ -111,7 +117,7 @@ dotnet run --project samples/ImageRagChat -- ./clip-models ./samples/images
 ### Running ImageSearchSample
 
 ```bash
-dotnet run --project samples/ImageSearchSample -- ./clip-models ./samples/images
+dotnet run --project samples/ImageSearchSample -- ./scripts/clip-models ./samples/images
 ```
 
 ---
