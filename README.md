@@ -1,9 +1,19 @@
 # LocalEmbeddings
 
-[![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalEmbeddings.svg)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![NuGet](https://img.shields.io/nuget/v/ElBruno.LocalEmbeddings.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/ElBruno.LocalEmbeddings.svg?style=flat-square&logo=nuget)](https://www.nuget.org/packages/ElBruno.LocalEmbeddings)
+[![Build Status](https://github.com/elbruno/elbruno.localembeddings/actions/workflows/publish.yml/badge.svg)](https://github.com/elbruno/elbruno.localembeddings/actions/workflows/publish.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/elbruno/elbruno.localembeddings?style=social)](https://github.com/elbruno/elbruno.localembeddings)
+[![Twitter Follow](https://img.shields.io/twitter/follow/elbruno?style=social)](https://twitter.com/elbruno)
 
 A .NET library for generating text embeddings locally using ONNX Runtime and Microsoft.Extensions.AI abstractions — no external API calls required.
+
+## 🎥 Quick Overview
+
+New to local embeddings? Watch this **[5-minute video](https://www.youtube.com/watch?v=0rRgSQWlVm8)** explaining the main goal of the library.
+
+Want to build RAG applications? Read this **[blog post about 3 RAG approaches in .NET](https://elbruno.com/2026/02/14/%f0%9f%a7%a0-building-rag-in-net-with-local-embeddings-3-approaches-zero-cloud-calls/)** with local embeddings and zero cloud calls.
 
 ## Features
 
