@@ -1,15 +1,17 @@
 # VisionMemoryAgentSample
 
-A minimal console app that combines **CLIP image embeddings** (local, ONNX) with an **Ollama LLM agent** that can ingest images and search them using natural language — all running locally, no cloud services.
+A minimal console app that combines **CLIP image embeddings** (local, ONNX) with a **Microsoft Agent Framework** agent backed by **Ollama** that can ingest images and search them using natural language — all running locally, no cloud services.
 
 ## What It Does
 
 1. Loads CLIP models (text + vision encoders) for local embedding generation.
-2. Connects to a local Ollama LLM with tool-calling support.
+2. Connects to a local Ollama LLM using Microsoft Agent Framework (Ollama provider).
 3. Exposes two tools to the agent:
-   - **IngestImage(path, tagsCsv)** — generates a CLIP embedding for an image and stores it in memory.
-   - **FindSimilarImages(query, topK)** — encodes a text query with CLIP and finds the most similar images by cosine similarity.
-4. Runs an interactive chat loop where the LLM decides when to call each tool.
+
+- **IngestImage(path)** — generates a CLIP embedding for an image and stores it in memory.
+- **FindSimilarImages(query, topK)** — encodes a text query with CLIP and finds the most similar images by cosine similarity.
+
+1. Runs an interactive chat loop where the LLM decides when to call each tool.
 
 Everything runs locally. No databases, no cloud APIs, no persistence — pure in-memory.
 
@@ -34,32 +36,57 @@ optimum-cli export onnx --model openai/clip-vit-base-patch32 ./clip-models/
 ollama serve
 
 # From the repository root
-dotnet run --project samples/VisionMemoryAgentSample -- --model-dir ./clip-models
+dotnet run --project samples/VisionMemoryAgentSample -- --model-dir ./scripts/clip-models
+
+```
+
+From the sample directory (`samples/VisionMemoryAgentSample`):
+
+```powershell
+dotnet run -- --model-dir ..\..\scripts\clip-models
 ```
 
 Optional: specify a different Ollama model:
 
 ```bash
-dotnet run --project samples/VisionMemoryAgentSample -- --model-dir ./clip-models --ollama-model llama3.2
+dotnet run --project samples/VisionMemoryAgentSample -- --model-dir ./scripts/clip-models --ollama-model llama3.2
 ```
+
+### Troubleshooting
+
+- If you see raw JSON tool calls instead of tool results, make sure you're using a tool-calling capable model in Ollama and that packages are restored (`dotnet restore`). The sample enables function invocation on the client, which is required for tool execution.
 
 ## Example Usage
 
 ```
 Vision Memory Agent ready! Type a message (or 'exit' to quit).
 
-> Please ingest the image at ./photos/cat.jpg with tags cat,pet,animal
+> Please ingest the image at ./samples/images/cat.jpg
 
-Ingested 'cat.jpg' with tags [cat,pet,animal]. Store now has 1 image(s).
+Ingested 'cat.jpg'. Store now has 1 image(s).
 
-> Ingest ./photos/sunset.jpg with tags sunset,nature,sky
+> Ingest ./samples/images/beach scene.jpg
 
-Ingested 'sunset.jpg' with tags [sunset,nature,sky]. Store now has 2 image(s).
+Ingested 'beach scene.jpg'. Store now has 2 image(s).
+
+> Ingest images from folder ./samples/images
+
+Ingested 2 image(s) from './samples/images'. Store now has 4 image(s).
 
 > Find images similar to "a beautiful sky at dusk"
 
 Top 1 result(s):
-  1. sunset.jpg (score: 0.2845, tags: sunset,nature,sky)
+  1. sunset.jpg (score: 0.2845)
+
+# From the sample directory (samples/VisionMemoryAgentSample)
+> Ingest ..\images\cat.jpg
+
+Ingested 'cat.jpg'. Store now has 1 image(s).
+
+> Find images similar to "a beautiful sky at dusk"
+
+Top 1 result(s):
+  1. cat.jpg (score: 0.2512)
 
 > exit
 Goodbye!

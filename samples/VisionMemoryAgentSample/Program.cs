@@ -1,8 +1,8 @@
 using System.ComponentModel;
 using System.Numerics.Tensors;
 using ElBruno.LocalEmbeddings.ImageEmbeddings;
+using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
-using OllamaSharp;
 
 // =============================================================================
 // Parse arguments
@@ -41,15 +41,40 @@ var imageStore = new List<(string Path, string Tags, float[] Embedding)>();
 // =============================================================================
 [Description("Ingest a local image file and store its CLIP embedding in memory. Returns confirmation.")]
 string IngestImage(
-    [Description("Absolute or relative path to the image file")] string path,
-    [Description("Comma-separated tags describing the image")] string tagsCsv)
+    [Description("Absolute or relative path to the image file")] string path)
 {
     if (!File.Exists(path))
         return $"Error: file not found: {path}";
 
     float[] embedding = imageEncoder.Encode(path);
-    imageStore.Add((path, tagsCsv, embedding));
-    return $"Ingested '{Path.GetFileName(path)}' with tags [{tagsCsv}]. Store now has {imageStore.Count} image(s).";
+    imageStore.Add((path, string.Empty, embedding));
+    return $"Ingested '{Path.GetFileName(path)}'. Store now has {imageStore.Count} image(s).";
+}
+
+[Description("Ingest all the images from a local folder and store its CLIP embedding in memory. Returns confirmation.")]
+string IngestImagesFromFolder(
+    [Description("Absolute or relative path to the folder")] string folderPath)
+{
+    if (!Directory.Exists(folderPath))
+        return $"Error: folder not found: {folderPath}";
+
+    string[] extensions = [".jpg", ".jpeg", ".png", ".bmp", ".gif"];
+    var imageFiles = Directory.GetFiles(folderPath)
+        .Where(f => extensions.Contains(Path.GetExtension(f).ToLowerInvariant()))
+        .ToList();
+
+    if (imageFiles.Count == 0)
+        return $"No images found in folder: {folderPath}";
+
+    int ingestedCount = 0;
+    foreach (string imagePath in imageFiles)
+    {
+        float[] embedding = imageEncoder.Encode(imagePath);
+        imageStore.Add((imagePath, string.Empty, embedding));
+        ingestedCount++;
+    }
+
+    return $"Ingested {ingestedCount} image(s) from '{folderPath}'. Store now has {imageStore.Count} image(s).";
 }
 
 [Description("Find images similar to a natural language query using CLIP embeddings. Returns top matches.")]
@@ -70,7 +95,7 @@ string FindSimilarImages(
         .ToList();
 
     var lines = results.Select((r, i) =>
-        $"  {i + 1}. {Path.GetFileName(r.Path)} (score: {r.Score:F4}, tags: {r.Tags})");
+        $"  {i + 1}. {Path.GetFileName(r.Path)} (score: {r.Score:F4})");
 
     return $"Top {results.Count} result(s):\n{string.Join("\n", lines)}";
 }
@@ -80,35 +105,37 @@ string FindSimilarImages(
 // =============================================================================
 Console.WriteLine($"Connecting to Ollama ({ollamaModel})...");
 
-IChatClient ollamaClient = new OllamaApiClient(new Uri("http://localhost:11434"), ollamaModel);
-IChatClient client = ollamaClient.AsBuilder()
+IChatClient chatClient = new OllamaChatClient(new Uri("http://localhost:11434"), modelId: ollamaModel)
+    .AsBuilder()
     .UseFunctionInvocation()
     .Build();
 
 var tools = new[]
 {
     AIFunctionFactory.Create(IngestImage),
-    AIFunctionFactory.Create(FindSimilarImages)
+    AIFunctionFactory.Create(FindSimilarImages),
+    AIFunctionFactory.Create(IngestImagesFromFolder)
 };
 
-var chatOptions = new ChatOptions { Tools = [.. tools] };
-var chatHistory = new List<ChatMessage>
-{
-    new(ChatRole.System,
-        """
+AIAgent agent = chatClient.AsAIAgent(
+    name: "VisionMemoryAgent",
+    instructions: """
         You are a Vision Memory agent. You help users manage and search a local image collection.
         You have two tools:
         - IngestImage: to add an image to the in-memory store
+        - IngestImagesFromFolder: to add all images from a folder to the in-memory store
         - FindSimilarImages: to search stored images using natural language
         Always use the tools when the user asks to ingest or search images.
         Report tool results clearly.
-        """)
-};
+        """,
+    tools: [.. tools]);
+
+AgentSession session = await agent.CreateSessionAsync();
 
 Console.WriteLine();
 Console.WriteLine("Vision Memory Agent ready! Type a message (or 'exit' to quit).");
 Console.WriteLine("Examples:");
-Console.WriteLine("  > Please ingest the image at ./photos/cat.jpg with tags cat,pet,animal");
+Console.WriteLine("  > Please ingest the image at ./samples/images/cat.jpg");
 Console.WriteLine("  > Find images similar to 'a sunset over the ocean'");
 Console.WriteLine();
 
@@ -126,15 +153,13 @@ while (true)
     if (input.Equals("exit", StringComparison.OrdinalIgnoreCase))
         break;
 
-    chatHistory.Add(new ChatMessage(ChatRole.User, input));
-
-    ChatResponse response = await client.GetResponseAsync(chatHistory, chatOptions);
+    ChatMessage message = new(ChatRole.User, input);
+    AgentResponse response = await agent.RunAsync([message], session);
 
     Console.WriteLine();
     Console.WriteLine(response.Text);
     Console.WriteLine();
 
-    chatHistory.AddRange(response.Messages);
 }
 
 Console.WriteLine("Goodbye!");
